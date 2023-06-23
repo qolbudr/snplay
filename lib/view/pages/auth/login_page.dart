@@ -70,7 +70,22 @@ class Login extends StatelessWidget {
                                 : loginController.buttonEnabled
                                     ? () => loginController.login()
                                     : null,
-                            child: loginController.status == Status.loading ? const Text("Tunggu Sebentar") : const Text("Masuk"),
+                            child: loginController.status == Status.loading
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      SizedBox(width: 15),
+                                      Text("Tunggu Sebentar"),
+                                    ],
+                                  )
+                                : const Text("Masuk"),
                           ),
                         ),
                       )
