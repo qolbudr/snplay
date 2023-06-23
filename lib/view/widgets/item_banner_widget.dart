@@ -2,9 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:snplay/constant.dart';
 
-class MovieBannerWidget extends StatelessWidget {
-  const MovieBannerWidget({super.key, this.banner, this.name});
+class ItemBannerWidget extends StatelessWidget {
+  const ItemBannerWidget({super.key, this.banner, this.name, this.onTap});
   final String? banner, name;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class MovieBannerWidget extends StatelessWidget {
                     width: 60,
                     height: 60,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: onTap,
                       style: defaultButtonStyle.copyWith(
                         backgroundColor: MaterialStateProperty.all(primaryColor.withOpacity(0.5)),
                         shape: MaterialStateProperty.all(
