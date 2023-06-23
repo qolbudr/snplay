@@ -10,7 +10,7 @@ class SliderIndicator extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(left: 5),
       width: isActive ? 20 : 10,
-      height: 10,
+      height: 8,
       decoration: BoxDecoration(
         color: isActive ? primaryColor : secondaryColor,
         borderRadius: BorderRadius.circular(100),
