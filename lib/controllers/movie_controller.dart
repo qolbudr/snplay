@@ -10,16 +10,20 @@ class MovieController extends GetxController {
   static MovieController instance = Get.find();
   final Rx<Status> _bannerStatus = Rx<Status>(Status.empty);
   final Rx<Status> _recentMovieStatus = Rx<Status>(Status.empty);
+  final Rx<Status> _randomMovieStatus = Rx<Status>(Status.empty);
   final Rx<int> _bannerActiveIndex = Rx<int>(0);
   final Rx<List<MovieBanner>> _movieBanner = Rx<List<MovieBanner>>([]);
   final Rx<List<Movie>> _recentMovie = Rx<List<Movie>>([]);
+  final Rx<List<Movie>> _randomMovie = Rx<List<Movie>>([]);
   final apiService = ApiService();
 
   Status get bannerStatus => _bannerStatus.value;
   int get bannerActiveIndex => _bannerActiveIndex.value;
   List<MovieBanner> get movieBanner => _movieBanner.value;
   Status get recentMovieStatus => _recentMovieStatus.value;
+  Status get randomMovieStatus => _randomMovieStatus.value;
   List<Movie> get recentMovie => _recentMovie.value;
+  List<Movie> get randomMovie => _randomMovie.value;
 
   set setBannerActiveIndex(index) {
     _bannerActiveIndex.value = index;
@@ -30,6 +34,7 @@ class MovieController extends GetxController {
     super.onInit();
     getMovieBanner();
     getRecentMovie();
+    getRandomMovie();
   }
 
   getMovieBanner() async {
@@ -53,6 +58,18 @@ class MovieController extends GetxController {
       _recentMovieStatus.value = Status.success;
     } catch (e) {
       _recentMovieStatus.value = Status.error;
+    }
+  }
+
+  getRandomMovie() async {
+    try {
+      _randomMovieStatus.value = Status.loading;
+      List<dynamic> response = await apiService.get("$baseURL/getRandMovies");
+      List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+      _randomMovie.value = data;
+      _randomMovieStatus.value = Status.success;
+    } catch (e) {
+      _randomMovieStatus.value = Status.error;
     }
   }
 }
