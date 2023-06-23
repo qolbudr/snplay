@@ -86,7 +86,9 @@ class MovieScreen extends StatelessWidget {
                     itemBuilder: (context, index) => ItemCard(
                       poster: movieController.recentMovie[index].poster ?? '-',
                       name: movieController.recentMovie[index].name ?? '-',
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/movie', arguments: movieController.recentMovie[index]);
+                      },
                     ),
                   ),
                 ),

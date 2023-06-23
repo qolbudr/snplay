@@ -1,6 +1,6 @@
-import 'package:snplay/view/entities/movie_entity.dart';
+import 'package:snplay/view/entities/movie_detail_entity.dart';
 
-class MovieResponseModel {
+class MovieDetailResponseModel {
   String? id;
   String? tMDBID;
   String? name;
@@ -16,7 +16,7 @@ class MovieResponseModel {
   String? status;
   String? contentType;
 
-  MovieResponseModel(
+  MovieDetailResponseModel(
       {this.id,
       this.tMDBID,
       this.name,
@@ -32,7 +32,7 @@ class MovieResponseModel {
       this.status,
       this.contentType});
 
-  MovieResponseModel.fromJson(Map<String, dynamic> json) {
+  MovieDetailResponseModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     tMDBID = json['TMDB_ID'];
     name = json['name'];
@@ -68,5 +68,16 @@ class MovieResponseModel {
     return data;
   }
 
-  Movie toEntity() => Movie(id: id, tmdbId: tMDBID, poster: poster, name: name ?? '-', banner: banner, genres: genres ?? '-');
+  MovieDetail toEntity() => MovieDetail(
+        id: id,
+        tmdbId: tMDBID,
+        poster: poster,
+        banner: banner,
+        genre: genres,
+        releaseDate: DateTime.tryParse(releaseDate ?? ''),
+        runtime: runtime,
+        name: name,
+        description: description,
+        type: type,
+      );
 }

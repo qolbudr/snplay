@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 const apiKey = 'jBybHUSehsW4oRzC';
 const baseURL = 'https://api.snplay.co/android';
+const tmdbBaseURL = 'https://api.themoviedb.org/3';
+const tmdbApiKey = 'cad7722e1ca44bd5f1ea46b59c8d54c8';
 const primaryColor = Color(0xFFECAC07);
 const secondaryColor = Color(0xFF3F3F3F);
 const h1 = TextStyle(fontSize: 35);
@@ -9,6 +11,16 @@ const h2 = TextStyle(fontSize: 25);
 const h3 = TextStyle(fontSize: 18);
 const h4 = TextStyle(fontSize: 16);
 const h5 = TextStyle(fontSize: 14);
+const rowSpacer = TableRow(
+  children: [
+    SizedBox(
+      height: 8,
+    ),
+    SizedBox(
+      height: 8,
+    )
+  ],
+);
 
 enum Status { loading, error, success, empty }
 
