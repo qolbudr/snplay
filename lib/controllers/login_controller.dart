@@ -67,7 +67,7 @@ class LoginController extends GetxController {
         UserData data = model.toEntity();
         _user.value = data;
         _status.value = Status.success;
-        Get.offAllNamed('/home');
+        Get.offAllNamed('/root');
       }
     } catch (e) {
       _status.value = Status.error;

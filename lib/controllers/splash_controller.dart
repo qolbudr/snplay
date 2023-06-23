@@ -20,7 +20,7 @@ class SplashController extends GetxController {
     try {
       UserData user = await dbService.getUser();
       loginController.setUser = user;
-      Get.offAllNamed('/home');
+      Get.offAllNamed('/root');
     } catch (e) {
       Get.offAllNamed('/welcome');
     }
