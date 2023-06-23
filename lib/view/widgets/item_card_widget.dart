@@ -21,6 +21,7 @@ class ItemCard extends StatelessWidget {
                 imageUrl: poster,
                 fit: BoxFit.cover,
               ),
+              const SizedBox(height: 5),
               Text(
                 name,
                 overflow: TextOverflow.ellipsis,
