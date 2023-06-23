@@ -6,14 +6,14 @@ import 'package:shimmer/shimmer.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/home_controller.dart';
 import 'package:snplay/controllers/login_controller.dart';
+import 'package:snplay/view/widgets/item_banner_widget.dart';
 import 'package:snplay/view/widgets/item_card_loading_widget.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
-import 'package:snplay/view/widgets/movie_banner_widget.dart';
 import 'package:snplay/view/widgets/section_title_widget.dart';
 import 'package:snplay/view/widgets/slider_indicator.dart';
 
-class Home extends StatelessWidget {
-  Home({super.key});
+class Root extends StatelessWidget {
+  Root({super.key});
   final HomeController homeController = Get.put(HomeController());
   final LoginController loginController = Get.put(LoginController());
 
@@ -32,9 +32,11 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(0),
                     child: CachedNetworkImage(
                       imageUrl: 'https://ui-avatars.com/api/?name=${loginController.user.name}&background=ECAC07&color=fff',
+                      width: 50,
+                      height: 50,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -72,10 +74,10 @@ class Home extends StatelessWidget {
                         autoPlay: true,
                       ),
                       items: List.generate(
-                        homeController.movieBanner.length,
-                        (index) => MovieBannerWidget(
-                          banner: homeController.movieBanner[index].banner,
-                          name: homeController.movieBanner[index].name,
+                        homeController.customBanner.length,
+                        (index) => ItemBannerWidget(
+                          banner: homeController.customBanner[index].banner,
+                          name: homeController.customBanner[index].name,
                         ),
                       ),
                     ),
@@ -86,16 +88,16 @@ class Home extends StatelessWidget {
             () => Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                homeController.movieBanner.length,
+                homeController.customBanner.length,
                 (index) => homeController.bannerActiveIndex == index ? const SliderIndicator(isActive: true) : const SliderIndicator(isActive: false),
               ),
             ),
           ),
           const SizedBox(height: 20),
-          SectionTitle(title: "Baru Ditambahkan", detail: "Film di SnPlay", onTap: () {}),
+          SectionTitle(title: "Film Baru Ditambahkan", detail: "Film di SnPlay", onTap: () {}),
           const SizedBox(height: 10),
           Obx(
-            () => homeController.recentStatus != Status.success
+            () => homeController.recentMovieStatus != Status.success
                 ? AspectRatio(
                     aspectRatio: Get.width / 150,
                     child: ListView.separated(
@@ -124,10 +126,10 @@ class Home extends StatelessWidget {
                   ),
           ),
           const SizedBox(height: 20),
-          SectionTitle(title: "Acak", detail: "Film di SnPlay", onTap: () {}),
+          SectionTitle(title: "Series Baru Ditambahkan", detail: "Series di SnPlay", onTap: () {}),
           const SizedBox(height: 10),
           Obx(
-            () => homeController.randomStatus != Status.success
+            () => homeController.recentSeriesStatus != Status.success
                 ? AspectRatio(
                     aspectRatio: Get.width / 150,
                     child: ListView.separated(
@@ -146,10 +148,10 @@ class Home extends StatelessWidget {
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       separatorBuilder: (context, index) => const SizedBox(width: 10),
-                      itemCount: homeController.randomMovie.length,
+                      itemCount: homeController.recentSeries.length,
                       itemBuilder: (context, index) => ItemCard(
-                        poster: homeController.randomMovie[index].poster ?? '-',
-                        name: homeController.randomMovie[index].name ?? '-',
+                        poster: homeController.recentSeries[index].poster ?? '-',
+                        name: homeController.recentSeries[index].name ?? '-',
                         onTap: () {},
                       ),
                     ),
