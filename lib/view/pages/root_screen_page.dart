@@ -70,6 +70,18 @@ class Root extends StatelessWidget {
                       icon: Icons.tv_outlined,
                       isActive: rootController.selectedIndex == 2,
                     ),
+                    DrawerMenu(
+                      onTap: () => rootController.setSelectedIndex = 3,
+                      name: "Tersimpan",
+                      icon: Icons.bookmark_outline,
+                      isActive: rootController.selectedIndex == 3,
+                    ),
+                    DrawerMenu(
+                      onTap: () => rootController.setSelectedIndex = 4,
+                      name: "Download",
+                      icon: Icons.downloading_outlined,
+                      isActive: rootController.selectedIndex == 4,
+                    ),
                   ],
                 ),
               ),
