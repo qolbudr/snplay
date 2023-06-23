@@ -8,6 +8,14 @@ class SplashController extends GetxController {
   final LoginController loginController = Get.put(LoginController());
   final dbService = DBService();
 
+  @override
+  onInit() {
+    super.onInit();
+    Future.delayed(const Duration(seconds: 3), () async {
+      await checkUser();
+    });
+  }
+
   checkUser() async {
     try {
       UserData user = await dbService.getUser();

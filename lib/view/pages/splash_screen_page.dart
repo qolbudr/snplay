@@ -3,24 +3,9 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/splash_controller.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
+class SplashScreen extends StatelessWidget {
+  SplashScreen({super.key});
   final SplashController splashController = Get.put(SplashController());
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 3), () async {
-      await splashController.checkUser();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

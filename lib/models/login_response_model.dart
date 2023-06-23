@@ -43,7 +43,7 @@ class LoginResponseModel {
   }
 
   UserData toEntity() => UserData(
-        id: int.tryParse(iD ?? ''),
+        id: iD,
         name: name,
         email: email,
         role: role,

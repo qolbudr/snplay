@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:snplay/constant.dart';
 
 class ApiService {
-  Future<Map<String, dynamic>> get(String url) async {
+  Future<dynamic> get(String url) async {
     try {
       final response = await http.get(Uri.parse(url), headers: {'X-API-KEY': apiKey});
       String body = response.body;

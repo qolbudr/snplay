@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'SnPlay',
       theme: ThemeData.dark().copyWith(
+        splashColor: primaryColor,
         primaryColor: primaryColor,
         textSelectionTheme: const TextSelectionThemeData(cursorColor: primaryColor),
         inputDecorationTheme: const InputDecorationTheme().copyWith(
@@ -38,14 +39,17 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: primaryColor,
+        ),
       ),
-      home: const SplashScreen(),
+      home: SplashScreen(),
       getPages: [
-        GetPage(name: '/', page: () => const SplashScreen()),
+        GetPage(name: '/', page: () => SplashScreen()),
         GetPage(name: '/welcome', page: () => const WelcomeScreen(), transition: Transition.cupertino),
         GetPage(name: '/login/selection', page: () => const LoginSelection(), transition: Transition.cupertino),
         GetPage(name: '/login', page: () => Login(), transition: Transition.cupertino),
-        GetPage(name: '/home', page: () => const Home(), transition: Transition.cupertino),
+        GetPage(name: '/home', page: () => Home(), transition: Transition.cupertino),
       ],
     );
   }
