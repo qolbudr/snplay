@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/view/pages/auth/login_page.dart';
 import 'package:snplay/view/pages/auth/login_selection_page.dart';
+import 'package:snplay/view/pages/home_screen_page.dart';
 import 'package:snplay/view/pages/splash_screen_page.dart';
 import 'package:snplay/view/pages/welcome_screen_page.dart';
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/welcome', page: () => const WelcomeScreen(), transition: Transition.cupertino),
         GetPage(name: '/login/selection', page: () => const LoginSelection(), transition: Transition.cupertino),
         GetPage(name: '/login', page: () => Login(), transition: Transition.cupertino),
+        GetPage(name: '/home', page: () => const Home(), transition: Transition.cupertino),
       ],
     );
   }
