@@ -1,28 +1,30 @@
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/services/api_service.dart';
-import 'package:snplay/models/movie_banner_response_model.dart';
+import 'package:snplay/models/custom_banner_response_model.dart';
 import 'package:snplay/models/movie_response_model.dart';
-import 'package:snplay/view/entities/movie_banner_entity.dart';
+import 'package:snplay/models/series_response_model.dart';
+import 'package:snplay/view/entities/custom_banner_entity.dart';
 import 'package:snplay/view/entities/movie_entity.dart';
+import 'package:snplay/view/entities/series_entity.dart';
 
 class HomeController extends GetxController {
   static HomeController instance = Get.find();
   final Rx<Status> _bannerStatus = Rx<Status>(Status.empty);
-  final Rx<Status> _recentStatus = Rx<Status>(Status.empty);
-  final Rx<Status> _randomStatus = Rx<Status>(Status.empty);
-  final Rx<List<MovieBanner>> _movieBanner = Rx<List<MovieBanner>>([]);
+  final Rx<Status> _recentMovieStatus = Rx<Status>(Status.empty);
+  final Rx<Status> _recentSeriesStatus = Rx<Status>(Status.empty);
+  final Rx<List<CustomBanner>> _customBanner = Rx<List<CustomBanner>>([]);
   final Rx<List<Movie>> _recentMovie = Rx<List<Movie>>([]);
-  final Rx<List<Movie>> _randomMovie = Rx<List<Movie>>([]);
+  final Rx<List<Series>> _recentSeries = Rx<List<Series>>([]);
   final apiService = ApiService();
   final Rx<int> _bannerActiveIndex = Rx<int>(0);
 
   Status get bannerStatus => _bannerStatus.value;
-  List<MovieBanner> get movieBanner => _movieBanner.value;
-  Status get recentStatus => _recentStatus.value;
-  Status get randomStatus => _randomStatus.value;
+  List<CustomBanner> get customBanner => _customBanner.value;
+  Status get recentMovieStatus => _recentMovieStatus.value;
+  Status get recentSeriesStatus => _recentSeriesStatus.value;
   List<Movie> get recentMovie => _recentMovie.value;
-  List<Movie> get randomMovie => _randomMovie.value;
+  List<Series> get recentSeries => _recentSeries.value;
   int get bannerActiveIndex => _bannerActiveIndex.value;
 
   set setBannerActiveIndex(index) {
@@ -32,17 +34,17 @@ class HomeController extends GetxController {
   @override
   onInit() {
     super.onInit();
-    getMovieBanner();
+    getCustomBanner();
     getRecentMovie();
-    getRandomMovie();
+    getRecentSeries();
   }
 
-  getMovieBanner() async {
+  getCustomBanner() async {
     try {
       _bannerStatus.value = Status.loading;
-      List<dynamic> response = await apiService.get("$baseURL/getMovieImageSlider");
-      List<MovieBanner> data = response.map((e) => MovieBannerResponseModel.fromJson(e).toEntity()).toList();
-      _movieBanner.value = data;
+      List<dynamic> response = await apiService.get("$baseURL/getCustomImageSlider");
+      List<CustomBanner> data = response.map((e) => CustomBannerResponseModel.fromJson(e).toEntity()).toList();
+      _customBanner.value = data;
       _bannerStatus.value = Status.success;
     } catch (e) {
       _bannerStatus.value = Status.error;
@@ -51,25 +53,25 @@ class HomeController extends GetxController {
 
   getRecentMovie() async {
     try {
-      _recentStatus.value = Status.loading;
+      _recentMovieStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/Movies");
       List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
       _recentMovie.value = data;
-      _recentStatus.value = Status.success;
+      _recentMovieStatus.value = Status.success;
     } catch (e) {
-      _recentStatus.value = Status.error;
+      _recentMovieStatus.value = Status.error;
     }
   }
 
-  getRandomMovie() async {
+  getRecentSeries() async {
     try {
-      _randomStatus.value = Status.loading;
-      List<dynamic> response = await apiService.get("$baseURL/getRandMovies");
-      List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
-      _randomMovie.value = data;
-      _randomStatus.value = Status.success;
+      _recentSeriesStatus.value = Status.loading;
+      List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/WebSeries");
+      List<Series> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
+      _recentSeries.value = data;
+      _recentSeriesStatus.value = Status.success;
     } catch (e) {
-      _randomStatus.value = Status.error;
+      _recentSeriesStatus.value = Status.error;
     }
   }
 }
