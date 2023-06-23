@@ -14,10 +14,16 @@ class DrawerMenu extends StatelessWidget {
       children: [
         ListTile(
           onTap: onTap,
-          title: Text(name),
+          title: Text(
+            name,
+            style: h4.copyWith(
+              fontWeight: FontWeight.w300,
+              color: Colors.white.withOpacity(0.5),
+            ),
+          ),
           leading: Icon(
             icon,
-            color: Colors.white,
+            color: Colors.white.withOpacity(0.5),
           ),
         ),
         if (isActive)
@@ -25,7 +31,7 @@ class DrawerMenu extends StatelessWidget {
             top: 0,
             bottom: 0,
             child: Container(
-              width: 5,
+              width: 3,
               color: primaryColor,
             ),
           )
