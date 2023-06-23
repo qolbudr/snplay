@@ -65,8 +65,12 @@ class Login extends StatelessWidget {
                           width: double.infinity,
                           child: ElevatedButton(
                             style: defaultButtonStyle,
-                            onPressed: loginController.buttonEnabled ? () {} : null,
-                            child: const Text("Masuk"),
+                            onPressed: loginController.status == Status.loading
+                                ? null
+                                : loginController.buttonEnabled
+                                    ? () => loginController.login()
+                                    : null,
+                            child: loginController.status == Status.loading ? const Text("Tunggu Sebentar") : const Text("Masuk"),
                           ),
                         ),
                       )
