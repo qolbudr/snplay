@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const apiKey = 'jBybHUSehsW4oRzC';
+const baseURL = 'https://api.snplay.co/android';
 const primaryColor = Color(0xFFECAC07);
 const secondaryColor = Color(0xFF3F3F3F);
 const h1 = TextStyle(fontSize: 35);
@@ -7,6 +9,10 @@ const h2 = TextStyle(fontSize: 25);
 const h3 = TextStyle(fontSize: 18);
 const h4 = TextStyle(fontSize: 16);
 const h5 = TextStyle(fontSize: 14);
+
+enum Status { loading, error, success, empty }
+
+String getError(e) => e.toString().replaceAll('Exception: ', '');
 const smallText = TextStyle(fontSize: 10);
 ButtonStyle defaultButtonStyle = ButtonStyle(
   padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
