@@ -7,7 +7,11 @@ class ApiService {
     try {
       final response = await http.get(Uri.parse(url), headers: {'X-API-KEY': apiKey});
       String body = response.body;
-      return jsonDecode(body);
+      try {
+        return jsonDecode(body);
+      } catch (e) {
+        return body;
+      }
     } catch (e) {
       rethrow;
     }

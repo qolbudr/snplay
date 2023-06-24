@@ -137,8 +137,14 @@ class MovieDetailScreen extends StatelessWidget {
                                       children: [
                                         IconButton(
                                           splashRadius: 20,
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.bookmark_outline),
+                                          onPressed: () {
+                                            if (movieDetailController.isFavourite) {
+                                              movieDetailController.removeFavourite();
+                                            } else {
+                                              movieDetailController.addFavourite();
+                                            }
+                                          },
+                                          icon: (movieDetailController.isFavourite) ? const Icon(Icons.bookmark, color: primaryColor) : const Icon(Icons.bookmark_outline),
                                         ),
                                         IconButton(
                                           splashRadius: 20,
