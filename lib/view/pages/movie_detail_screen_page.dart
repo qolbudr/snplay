@@ -132,33 +132,20 @@ class MovieDetailScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          IconButton(
-                                            splashRadius: 20,
-                                            onPressed: () {},
-                                            icon: const Icon(Icons.bookmark_outline),
-                                          ),
-                                          IconButton(
-                                            splashRadius: 20,
-                                            onPressed: () {},
-                                            icon: const Icon(Icons.download_outlined),
-                                          ),
-                                          IconButton(
-                                            splashRadius: 20,
-                                            onPressed: () {},
-                                            icon: const Icon(Icons.share_outlined),
-                                          ),
-                                          IconButton(
-                                            splashRadius: 20,
-                                            onPressed: () {},
-                                            icon: const Icon(Icons.more_vert),
-                                          ),
-                                        ],
-                                      ),
+                                    const Spacer(),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          splashRadius: 20,
+                                          onPressed: () {},
+                                          icon: const Icon(Icons.bookmark_outline),
+                                        ),
+                                        IconButton(
+                                          splashRadius: 20,
+                                          onPressed: () {},
+                                          icon: const Icon(Icons.download_outlined),
+                                        )
+                                      ],
                                     )
                                   ],
                                 ),
@@ -187,24 +174,24 @@ class MovieDetailScreen extends StatelessWidget {
                                     TableRow(
                                       children: [
                                         Text(
-                                          'BUDGET',
+                                          'TAGLINE',
                                           style: h5.copyWith(
                                             color: Colors.white.withOpacity(0.5),
                                           ),
                                         ),
-                                        Text(movieDetailController.tmdbMovieDetail.budget?.toString() ?? '-'),
+                                        Text(movieDetailController.tmdbMovieDetail.tagline ?? '-'),
                                       ],
                                     ),
                                     rowSpacer,
                                     TableRow(
                                       children: [
                                         Text(
-                                          'REVENUE',
+                                          'STUDIO',
                                           style: h5.copyWith(
                                             color: Colors.white.withOpacity(0.5),
                                           ),
                                         ),
-                                        Text(movieDetailController.tmdbMovieDetail.revenue?.toString() ?? '-'),
+                                        Text(movieDetailController.tmdbMovieDetail.studio ?? '-'),
                                       ],
                                     ),
                                     rowSpacer,

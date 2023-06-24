@@ -1,10 +1,10 @@
 class TmdbMovieDetail {
   String? homepage;
   double? popularity;
-  int? budget;
-  int? revenue;
+  String? tagline;
   int? voteCount;
   double? voteAverage;
+  String? studio;
 
-  TmdbMovieDetail({this.homepage, this.popularity, this.budget, this.revenue, this.voteAverage, this.voteCount});
+  TmdbMovieDetail({this.homepage, this.popularity, this.tagline, this.voteAverage, this.voteCount, this.studio});
 }

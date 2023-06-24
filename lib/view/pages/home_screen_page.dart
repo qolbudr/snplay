@@ -86,7 +86,9 @@ class Home extends StatelessWidget {
                     itemBuilder: (context, index) => ItemCard(
                       poster: homeController.recentMovie[index].poster ?? '-',
                       name: homeController.recentMovie[index].name ?? '-',
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/movie', arguments: homeController.recentMovie[index]);
+                      },
                     ),
                   ),
                 ),
