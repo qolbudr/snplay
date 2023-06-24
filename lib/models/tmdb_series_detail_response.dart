@@ -1,6 +1,6 @@
-import 'package:snplay/view/entities/tmdb_movie_detail_entity.dart';
+import 'package:snplay/view/entities/tmdb_series_detail_entity.dart';
 
-class TmdbMovieDetailResponseModel {
+class TmdbSeriesDetailResponseModel {
   bool? adult;
   String? backdropPath;
   BelongsToCollection? belongsToCollection;
@@ -27,7 +27,7 @@ class TmdbMovieDetailResponseModel {
   double? voteAverage;
   int? voteCount;
 
-  TmdbMovieDetailResponseModel(
+  TmdbSeriesDetailResponseModel(
       {this.adult,
       this.backdropPath,
       this.belongsToCollection,
@@ -54,7 +54,7 @@ class TmdbMovieDetailResponseModel {
       this.voteAverage,
       this.voteCount});
 
-  TmdbMovieDetailResponseModel.fromJson(Map<String, dynamic> json) {
+  TmdbSeriesDetailResponseModel.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdropPath = json['backdrop_path'];
     belongsToCollection = json['belongs_to_collection'] != null ? BelongsToCollection.fromJson(json['belongs_to_collection']) : null;
@@ -142,7 +142,7 @@ class TmdbMovieDetailResponseModel {
     return data;
   }
 
-  TmdbMovieDetail toEntity() => TmdbMovieDetail(
+  TmdbSeriesDetail toEntity() => TmdbSeriesDetail(
         homepage: homepage ?? '-',
         popularity: popularity,
         tagline: tagline ?? '-',

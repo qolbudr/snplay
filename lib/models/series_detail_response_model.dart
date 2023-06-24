@@ -1,12 +1,13 @@
-import 'package:snplay/view/entities/series_entity.dart';
+import 'package:snplay/view/entities/series_detail_entity.dart';
 
-class SeriesResponseModel {
+class SeriesDetailResponseModel {
   String? id;
   String? tMDBID;
   String? name;
   String? description;
   String? genres;
   String? releaseDate;
+  String? runtime;
   String? poster;
   String? banner;
   String? youtubeTrailer;
@@ -15,16 +16,30 @@ class SeriesResponseModel {
   String? status;
   String? contentType;
 
-  SeriesResponseModel(
-      {this.id, this.tMDBID, this.name, this.description, this.genres, this.releaseDate, this.poster, this.banner, this.youtubeTrailer, this.downloadable, this.type, this.status, this.contentType});
+  SeriesDetailResponseModel(
+      {this.id,
+      this.tMDBID,
+      this.name,
+      this.description,
+      this.genres,
+      this.releaseDate,
+      this.runtime,
+      this.poster,
+      this.banner,
+      this.youtubeTrailer,
+      this.downloadable,
+      this.type,
+      this.status,
+      this.contentType});
 
-  SeriesResponseModel.fromJson(Map<String, dynamic> json) {
+  SeriesDetailResponseModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     tMDBID = json['TMDB_ID'];
     name = json['name'];
     description = json['description'];
     genres = json['genres'];
     releaseDate = json['release_date'];
+    runtime = json['runtime'];
     poster = json['poster'];
     banner = json['banner'];
     youtubeTrailer = json['youtube_trailer'];
@@ -42,6 +57,7 @@ class SeriesResponseModel {
     data['description'] = description;
     data['genres'] = genres;
     data['release_date'] = releaseDate;
+    data['runtime'] = runtime;
     data['poster'] = poster;
     data['banner'] = banner;
     data['youtube_trailer'] = youtubeTrailer;
@@ -52,5 +68,16 @@ class SeriesResponseModel {
     return data;
   }
 
-  Series toEntity() => Series(id: id, poster: poster, name: name, banner: banner, tmdbId: tMDBID, genres: genres ?? '-');
+  SeriesDetail toEntity() => SeriesDetail(
+        id: id,
+        tmdbId: tMDBID,
+        poster: poster,
+        banner: banner,
+        genre: genres,
+        releaseDate: DateTime.tryParse(releaseDate ?? ''),
+        runtime: runtime,
+        name: name,
+        description: description,
+        type: type,
+      );
 }

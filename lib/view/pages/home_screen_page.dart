@@ -120,7 +120,9 @@ class Home extends StatelessWidget {
                     itemBuilder: (context, index) => ItemCard(
                       poster: homeController.recentSeries[index].poster ?? '-',
                       name: homeController.recentSeries[index].name ?? '-',
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/series', arguments: homeController.recentSeries[index]);
+                      },
                     ),
                   ),
                 ),

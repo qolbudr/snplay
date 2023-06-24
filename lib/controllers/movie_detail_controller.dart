@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/login_controller.dart';
@@ -30,17 +29,20 @@ class MovieDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.microtask(() async {
+    initFunction();
+  }
+
+  initFunction() async {
+    try {
       await getMovieDetail();
       await getTmdbMovieDetail();
       await getSimilarMovie();
       await checkFavourite();
-    }).then((value) {
       _detailStatus.value = Status.success;
-    }).catchError((e) {
+    } catch (e) {
       _detailStatus.value = Status.error;
       Get.snackbar('Ada Kesalahan', getError(e));
-    });
+    }
   }
 
   checkFavourite() async {
@@ -91,17 +93,13 @@ class MovieDetailController extends GetxController {
   }
 
   getSimilarMovie() async {
-    try {
-      List<dynamic> response = await apiService.post(
-        '$baseURL/getRelatedMovies/${arguments.id}/5',
-        {
-          'genres': arguments.genres,
-        },
-      );
-      List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
-      _similarMovie.value = data;
-    } catch (e) {
-      rethrow;
-    }
+    List<dynamic> response = await apiService.post(
+      '$baseURL/getRelatedMovies/${arguments.id}/5',
+      {
+        'genres': arguments.genres,
+      },
+    );
+    List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+    _similarMovie.value = data;
   }
 }

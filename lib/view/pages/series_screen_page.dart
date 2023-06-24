@@ -86,7 +86,9 @@ class SeriesScreen extends StatelessWidget {
                     itemBuilder: (context, index) => ItemCard(
                       poster: seriesCotroller.recentSeries[index].poster ?? '-',
                       name: seriesCotroller.recentSeries[index].name ?? '-',
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/series', arguments: seriesCotroller.recentSeries[index]);
+                      },
                     ),
                   ),
                 ),
@@ -118,7 +120,9 @@ class SeriesScreen extends StatelessWidget {
                     itemBuilder: (context, index) => ItemCard(
                       poster: seriesCotroller.randomSeries[index].poster ?? '-',
                       name: seriesCotroller.randomSeries[index].name ?? '-',
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/series', arguments: seriesCotroller.randomSeries[index]);
+                      },
                     ),
                   ),
                 ),
