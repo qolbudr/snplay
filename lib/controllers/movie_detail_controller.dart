@@ -93,13 +93,17 @@ class MovieDetailController extends GetxController {
   }
 
   getSimilarMovie() async {
-    List<dynamic> response = await apiService.post(
-      '$baseURL/getRelatedMovies/${arguments.id}/5',
-      {
-        'genres': arguments.genres,
-      },
-    );
-    List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
-    _similarMovie.value = data;
+    try {
+      List<dynamic> response = await apiService.post(
+        '$baseURL/getRelatedMovies/${arguments.id}/5',
+        {
+          'genres': arguments.genres,
+        },
+      );
+      List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+      _similarMovie.value = data;
+    } catch (e) {
+      return false;
+    }
   }
 }

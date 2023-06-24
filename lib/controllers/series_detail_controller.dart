@@ -140,13 +140,17 @@ class SeriesDetailController extends GetxController {
   }
 
   getSimilarSeries() async {
-    List<dynamic> response = await apiService.post(
-      '$baseURL/getRelatedWebseries/${arguments.id}/5',
-      {
-        'genres': arguments.genres,
-      },
-    );
-    List<Series> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
-    _similarSeries.value = data;
+    try {
+      List<dynamic> response = await apiService.post(
+        '$baseURL/getRelatedWebseries/${arguments.id}/5',
+        {
+          'genres': arguments.genres,
+        },
+      );
+      List<Series> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
+      _similarSeries.value = data;
+    } catch (e) {
+      return false;
+    }
   }
 }
