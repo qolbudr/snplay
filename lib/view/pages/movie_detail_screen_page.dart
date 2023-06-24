@@ -122,7 +122,7 @@ class MovieDetailScreen extends StatelessWidget {
                                       child: ElevatedButton(
                                         style: defaultButtonStyle.copyWith(padding: MaterialStateProperty.all(const EdgeInsets.all(8))),
                                         onPressed: () {
-                                          Get.toNamed('/player');
+                                          movieDetailController.getPlayerSource();
                                         },
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
