@@ -25,14 +25,14 @@ class SeriesDetailScreen extends StatelessWidget {
                   Stack(
                     children: [
                       AspectRatio(
-                        aspectRatio: 1,
+                        aspectRatio: Get.width / 300,
                         child: CachedNetworkImage(
                           imageUrl: series.banner ?? '-',
                           fit: BoxFit.cover,
                         ),
                       ),
                       AspectRatio(
-                        aspectRatio: 1,
+                        aspectRatio: Get.width / 300,
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -59,7 +59,7 @@ class SeriesDetailScreen extends StatelessWidget {
                             children: [
                               CachedNetworkImage(
                                 imageUrl: series.poster ?? '-',
-                                width: Get.width * 0.4,
+                                width: 150,
                               ),
                               const SizedBox(width: 15),
                               Expanded(
@@ -119,7 +119,7 @@ class SeriesDetailScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     SizedBox(
-                                      width: Get.width * 0.4,
+                                      width: 150,
                                       child: ElevatedButton(
                                         style: defaultButtonStyle.copyWith(padding: MaterialStateProperty.all(const EdgeInsets.all(8))),
                                         onPressed: () {},
@@ -269,7 +269,7 @@ class SeriesDetailScreen extends StatelessWidget {
                                         itemBuilder: (context, index) => Row(
                                           children: [
                                             SizedBox(
-                                              width: Get.width * 0.4,
+                                              width: 150,
                                               child: AspectRatio(
                                                 aspectRatio: 16 / 9,
                                                 child: CachedNetworkImage(
@@ -323,33 +323,42 @@ class SeriesDetailScreen extends StatelessWidget {
                                     color: primaryColor,
                                   )),
                                 ),
-                          const SizedBox(height: 5),
-                          SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
-                          const SizedBox(height: 10),
-                          AspectRatio(
-                            aspectRatio: Get.width / 150,
-                            child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              separatorBuilder: (context, index) => const SizedBox(width: 10),
-                              itemCount: seriesDetailController.similarSeries.length,
-                              itemBuilder: (context, index) => ItemCard(
-                                poster: seriesDetailController.similarSeries[index].poster ?? '-',
-                                name: seriesDetailController.similarSeries[index].name ?? '-',
-                                onTap: () {
-                                  Get.delete<SeriesDetailController>();
-                                  Get.toNamed('/series', arguments: seriesDetailController.similarSeries[index], preventDuplicates: false);
-                                },
-                              ),
+                          if (seriesDetailController.similarSeries.isNotEmpty)
+                            Column(
+                              children: [
+                                const SizedBox(height: 5),
+                                SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
+                                const SizedBox(height: 10),
+                                AspectRatio(
+                                  aspectRatio: Get.width / 150,
+                                  child: ListView.separated(
+                                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    separatorBuilder: (context, index) => const SizedBox(width: 10),
+                                    itemCount: seriesDetailController.similarSeries.length,
+                                    itemBuilder: (context, index) => ItemCard(
+                                      poster: seriesDetailController.similarSeries[index].poster ?? '-',
+                                      name: seriesDetailController.similarSeries[index].name ?? '-',
+                                      onTap: () {
+                                        Get.delete<SeriesDetailController>();
+                                        Get.toNamed('/series', arguments: seriesDetailController.similarSeries[index], preventDuplicates: false);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
                           const SizedBox(height: 50),
                         ],
                       )
-                    : const Center(
-                        child: CircularProgressIndicator(
-                          color: primaryColor,
+                    : SizedBox(
+                        width: Get.width,
+                        height: 300,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
                         ),
                       ),
               )

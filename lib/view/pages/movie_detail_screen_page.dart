@@ -25,14 +25,14 @@ class MovieDetailScreen extends StatelessWidget {
                   Stack(
                     children: [
                       AspectRatio(
-                        aspectRatio: 1,
+                        aspectRatio: Get.width / 300,
                         child: CachedNetworkImage(
                           imageUrl: movie.banner ?? '-',
                           fit: BoxFit.cover,
                         ),
                       ),
                       AspectRatio(
-                        aspectRatio: 1,
+                        aspectRatio: Get.width / 300,
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -59,7 +59,7 @@ class MovieDetailScreen extends StatelessWidget {
                             children: [
                               CachedNetworkImage(
                                 imageUrl: movie.poster ?? '-',
-                                width: Get.width * 0.4,
+                                width: 150,
                               ),
                               const SizedBox(width: 15),
                               Expanded(
@@ -118,10 +118,12 @@ class MovieDetailScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     SizedBox(
-                                      width: Get.width * 0.4,
+                                      width: 150,
                                       child: ElevatedButton(
                                         style: defaultButtonStyle.copyWith(padding: MaterialStateProperty.all(const EdgeInsets.all(8))),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Get.toNamed('/player');
+                                        },
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: const [
@@ -217,33 +219,42 @@ class MovieDetailScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
-                          const SizedBox(height: 10),
-                          AspectRatio(
-                            aspectRatio: Get.width / 150,
-                            child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              separatorBuilder: (context, index) => const SizedBox(width: 10),
-                              itemCount: movieDetailController.similarMovie.length,
-                              itemBuilder: (context, index) => ItemCard(
-                                poster: movieDetailController.similarMovie[index].poster ?? '-',
-                                name: movieDetailController.similarMovie[index].name ?? '-',
-                                onTap: () {
-                                  Get.delete<MovieDetailController>();
-                                  Get.toNamed('/movie', arguments: movieDetailController.similarMovie[index], preventDuplicates: false);
-                                },
-                              ),
+                          if (movieDetailController.similarMovie.isNotEmpty)
+                            Column(
+                              children: [
+                                const SizedBox(height: 5),
+                                SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
+                                const SizedBox(height: 10),
+                                AspectRatio(
+                                  aspectRatio: Get.width / 150,
+                                  child: ListView.separated(
+                                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    separatorBuilder: (context, index) => const SizedBox(width: 10),
+                                    itemCount: movieDetailController.similarMovie.length,
+                                    itemBuilder: (context, index) => ItemCard(
+                                      poster: movieDetailController.similarMovie[index].poster ?? '-',
+                                      name: movieDetailController.similarMovie[index].name ?? '-',
+                                      onTap: () {
+                                        Get.delete<MovieDetailController>();
+                                        Get.toNamed('/movie', arguments: movieDetailController.similarMovie[index], preventDuplicates: false);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
                           const SizedBox(height: 50),
                         ],
                       )
-                    : const Center(
-                        child: CircularProgressIndicator(
-                          color: primaryColor,
+                    : SizedBox(
+                        width: Get.width,
+                        height: 300,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
                         ),
                       ),
               )
