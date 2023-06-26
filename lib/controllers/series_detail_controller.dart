@@ -53,18 +53,19 @@ class SeriesDetailController extends GetxController {
   }
 
   initFunction() async {
-    try {
-      await getSeriesDetail();
-      await getTmdbSeriesDetail();
-      await getSimilarSeries();
-      await checkFavourite();
-      await getSeason();
+    Future.wait([
+      getSeriesDetail(),
+      getTmdbSeriesDetail(),
+      checkFavourite(),
+      getSeason(),
+      getSimilarSeries(),
+    ]).then((value) {
       _detailStatus.value = Status.success;
-      await getEpisode();
-    } catch (e) {
+      getEpisode();
+    }).catchError((e) {
       _detailStatus.value = Status.error;
       Get.snackbar('Ada Kesalahan', getError(e));
-    }
+    });
   }
 
   getEpisode() async {
@@ -104,7 +105,7 @@ class SeriesDetailController extends GetxController {
     Get.toNamed('/player/series', arguments: '');
   }
 
-  getSeason() async {
+  Future<void> getSeason() async {
     try {
       List<dynamic> response = await apiService.get('$baseURL/getSeasons/${arguments.id}');
       List<Season> data = response.map((e) => SeasonResponseModel.fromJson(e).toEntity()).toList();
@@ -117,7 +118,7 @@ class SeriesDetailController extends GetxController {
     }
   }
 
-  checkFavourite() async {
+  Future<void> checkFavourite() async {
     try {
       String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/${arguments.id}/1');
       if (response != '') {
@@ -142,7 +143,7 @@ class SeriesDetailController extends GetxController {
     Get.snackbar('Berhasil', 'Series telah dihapus dari favorit');
   }
 
-  getSeriesDetail() async {
+  Future<void> getSeriesDetail() async {
     try {
       Map<String, dynamic> response = await apiService.get('$baseURL/getWebSeriesDetails/${arguments.id}');
       SeriesDetailResponseModel model = SeriesDetailResponseModel.fromJson(response);
@@ -153,7 +154,7 @@ class SeriesDetailController extends GetxController {
     }
   }
 
-  getTmdbSeriesDetail() async {
+  Future<void> getTmdbSeriesDetail() async {
     try {
       Map<String, dynamic> response = await apiService.get('$tmdbBaseURL/tv/${arguments.tmdbId}?api_key=$tmdbApiKey');
       TmdbSeriesDetailResponseModel model = TmdbSeriesDetailResponseModel.fromJson(response);
@@ -164,7 +165,7 @@ class SeriesDetailController extends GetxController {
     }
   }
 
-  getSimilarSeries() async {
+  Future<void> getSimilarSeries() async {
     try {
       List<dynamic> response = await apiService.post(
         '$baseURL/getRelatedWebseries/${arguments.id}/5',
@@ -175,7 +176,7 @@ class SeriesDetailController extends GetxController {
       List<Series> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
       _similarSeries.value = data;
     } catch (e) {
-      return false;
+      return;
     }
   }
 }

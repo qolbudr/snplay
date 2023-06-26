@@ -40,24 +40,24 @@ class ItemBannerWidget extends StatelessWidget {
                   name ?? '-',
                   style: h3,
                 ),
-                Center(
-                  child: SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: onTap,
-                      style: defaultButtonStyle.copyWith(
-                        backgroundColor: MaterialStateProperty.all(primaryColor.withOpacity(0.5)),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(150),
-                          ),
-                        ),
-                      ),
-                      child: const Icon(Icons.play_arrow),
-                    ),
-                  ),
-                )
+                // Center(
+                //   child: SizedBox(
+                //     width: 60,
+                //     height: 60,
+                //     child: ElevatedButton(
+                //       onPressed: onTap,
+                //       style: defaultButtonStyle.copyWith(
+                //         backgroundColor: MaterialStateProperty.all(primaryColor.withOpacity(0.5)),
+                //         shape: MaterialStateProperty.all(
+                //           RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(150),
+                //           ),
+                //         ),
+                //       ),
+                //       child: const Icon(Icons.play_arrow),
+                //     ),
+                //   ),
+                // )
               ],
             ),
           )
