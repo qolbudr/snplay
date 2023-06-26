@@ -122,7 +122,7 @@ class SeriesDetailScreen extends StatelessWidget {
                                       width: 150,
                                       child: ElevatedButton(
                                         style: defaultButtonStyle.copyWith(padding: MaterialStateProperty.all(const EdgeInsets.all(8))),
-                                        onPressed: () {},
+                                        onPressed: () => seriesDetailController.getPlayerSource(0),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: const [
@@ -266,50 +266,53 @@ class SeriesDetailScreen extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
                                         itemCount: seriesDetailController.episode.length,
                                         separatorBuilder: (context, index) => const Divider(color: secondaryColor),
-                                        itemBuilder: (context, index) => Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 150,
-                                              child: AspectRatio(
-                                                aspectRatio: 16 / 9,
-                                                child: CachedNetworkImage(
-                                                  imageUrl: seriesDetailController.episode[index].episoadeImage ?? '-',
-                                                  fit: BoxFit.cover,
+                                        itemBuilder: (context, index) => GestureDetector(
+                                          onTap: () => seriesDetailController.getPlayerSource(index),
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 150,
+                                                child: AspectRatio(
+                                                  aspectRatio: 16 / 9,
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: seriesDetailController.episode[index].episoadeImage ?? '-',
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    seriesDetailController.episode[index].episoadeName ?? '-',
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    style: h4.copyWith(fontWeight: FontWeight.w600),
-                                                  ),
-                                                  const SizedBox(height: 15),
-                                                  Text(
-                                                    seriesDetailController.episode[index].episoadeDescription ?? '-',
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 3,
-                                                    style: h5.copyWith(
-                                                      color: Colors.white.withOpacity(0.5),
-                                                      fontWeight: FontWeight.w400,
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      seriesDetailController.episode[index].episoadeName ?? '-',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: h4.copyWith(fontWeight: FontWeight.w600),
                                                     ),
-                                                  ),
-                                                ],
+                                                    const SizedBox(height: 15),
+                                                    Text(
+                                                      seriesDetailController.episode[index].episoadeDescription ?? '-',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 3,
+                                                      style: h5.copyWith(
+                                                        color: Colors.white.withOpacity(0.5),
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(
-                                                Icons.download_outlined,
-                                              ),
-                                            )
-                                          ],
+                                              const SizedBox(width: 5),
+                                              IconButton(
+                                                onPressed: () {},
+                                                icon: const Icon(
+                                                  Icons.download_outlined,
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     )

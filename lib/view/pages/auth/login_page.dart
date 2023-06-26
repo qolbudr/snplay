@@ -39,6 +39,7 @@ class Login extends StatelessWidget {
                       TextFormField(
                         onChanged: (value) => loginController.onChange('email', value),
                         decoration: const InputDecoration(
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: secondaryColor)),
                           label: Text("Email"),
                         ),
                       ),
@@ -48,6 +49,7 @@ class Login extends StatelessWidget {
                           onChanged: (value) => loginController.onChange('password', value),
                           obscureText: !loginController.showPassword,
                           decoration: InputDecoration(
+                            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: secondaryColor)),
                             label: const Text("Kata Sandi"),
                             suffixIcon: IconButton(
                               onPressed: () => loginController.tooglePassword(),

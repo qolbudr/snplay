@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/login_controller.dart';
@@ -77,6 +78,30 @@ class SeriesDetailController extends GetxController {
       _episodeStatus.value = Status.error;
       Get.snackbar('Ada Kesalahan', getError(e));
     }
+  }
+
+  getPlayerSource(int index) async {
+    Get.snackbar(
+      'Tunggu',
+      'Mendapatkan informasi player',
+      titleText: Row(
+        children: const [
+          SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              color: primaryColor,
+            ),
+          ),
+          SizedBox(width: 10),
+          Text("Tunggu Sebentar")
+        ],
+      ),
+    );
+
+    // List<dynamic> response = await apiService.post('$baseURL/getsubtitle/${arguments.id}/1', {});
+    // List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
+    Get.toNamed('/player/series', arguments: '');
   }
 
   getSeason() async {

@@ -15,6 +15,7 @@ import 'package:snplay/view/entities/movie_entity.dart';
 import 'package:snplay/view/entities/movie_playlink_entity.dart';
 import 'package:snplay/view/entities/movie_subtitle_entity.dart';
 import 'package:snplay/view/entities/tmdb_movie_detail_entity.dart';
+import 'package:snplay/view/widgets/custom_player_control_widget.dart';
 
 class MovieDetailController extends GetxController {
   static MovieDetailController instance = Get.find();
@@ -25,6 +26,7 @@ class MovieDetailController extends GetxController {
   final Rx<TmdbMovieDetail> _tmdbMovieDetail = Rx<TmdbMovieDetail>(TmdbMovieDetail());
   final Rx<List<Movie>> _similarMovie = Rx<List<Movie>>([]);
   final Rx<bool> _isFavourite = Rx<bool>(false);
+  final Rx<bool> _isWaitPlay = Rx<bool>(false);
 
   Status get detailStatus => _detailStatus.value;
   MovieDetail get movieDetail => _movieDetail.value;
@@ -32,6 +34,7 @@ class MovieDetailController extends GetxController {
   TmdbMovieDetail get tmdbMovieDetail => _tmdbMovieDetail.value;
   final Movie arguments = Get.arguments;
   bool get isFavourite => _isFavourite.value;
+  bool get isWaitPlay => _isWaitPlay.value;
 
   @override
   void onInit() {
@@ -39,75 +42,81 @@ class MovieDetailController extends GetxController {
     initFunction();
   }
 
-  initFunction() async {
-    try {
-      await getMovieDetail();
-      await getTmdbMovieDetail();
-      await getSimilarMovie();
-      await checkFavourite();
+  initFunction() {
+    Future.wait([getTmdbMovieDetail(), getMovieDetail(), getSimilarMovie(), checkFavourite()]).then((value) {
       _detailStatus.value = Status.success;
-    } catch (e) {
+    }).catchError((e) {
       _detailStatus.value = Status.error;
       Get.snackbar('Ada Kesalahan', getError(e));
-    }
+    });
   }
 
   getPlayerSource() async {
-    Get.snackbar(
-      'Tunggu',
-      'Mendapatkan informasi player',
-      titleText: Row(
-        children: const [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              color: primaryColor,
+    try {
+      Get.snackbar('Loading', 'Mendapatkan informasi player',
+          titleText: Row(
+            children: const [
+              SizedBox(
+                width: 25,
+                height: 25,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: primaryColor,
+                ),
+              ),
+              SizedBox(width: 15),
+              Text(
+                'Loading',
+                style: h5,
+              )
+            ],
+          ),
+          isDismissible: false);
+      _isWaitPlay.value = true;
+      List<dynamic> response = await apiService.get('$baseURL/getMoviePlayLinks/${arguments.id}');
+      List<MoviePlaylink> playLink = response.map((e) => MoviePlaylinkResponseModel.fromJson(e).toEntity()).toList();
+      response = await apiService.post('$baseURL/getsubtitle/${arguments.id}/0', {});
+      List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
+      final BetterPlayerController controller = BetterPlayerController(
+        BetterPlayerConfiguration(
+          fit: BoxFit.contain,
+          autoPlay: true,
+          showPlaceholderUntilPlay: true,
+          subtitlesConfiguration: const BetterPlayerSubtitlesConfiguration(
+            fontSize: 18,
+            backgroundColor: Colors.black,
+          ),
+          controlsConfiguration: BetterPlayerControlsConfiguration(
+            playerTheme: BetterPlayerTheme.custom,
+            showControlsOnInitialize: false,
+            overflowModalColor: secondaryColor,
+            overflowModalTextColor: Colors.white,
+            overflowMenuIconsColor: Colors.white,
+            customControlsBuilder: (controller, onPlayerVisibilityChanged) => CustomControl(
+              controller: controller,
+              onControlsVisibilityChanged: onPlayerVisibilityChanged,
             ),
           ),
-          SizedBox(width: 10),
-          Text("Tunggu Sebentar")
-        ],
-      ),
-    );
-    List<dynamic> response = await apiService.get('$baseURL/getMoviePlayLinks/${arguments.id}');
-    List<MoviePlaylink> playLink = response.map((e) => MoviePlaylinkResponseModel.fromJson(e).toEntity()).toList();
-    response = await apiService.post('$baseURL/getsubtitle/${arguments.id}/0', {});
-    List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
-    BetterPlayerController controller = BetterPlayerController(
-      BetterPlayerConfiguration(
-        handleLifecycle: true,
-        controlsConfiguration: const BetterPlayerControlsConfiguration(
-          showControlsOnInitialize: false,
-          enableFullscreen: false,
         ),
-        autoPlay: true,
-        placeholder: CachedNetworkImage(imageUrl: arguments.poster ?? '-'),
-        showPlaceholderUntilPlay: true,
-        fit: BoxFit.contain,
-        subtitlesConfiguration: const BetterPlayerSubtitlesConfiguration(
-          backgroundColor: Colors.black,
-          fontColor: Colors.white,
-          fontSize: 18,
+        betterPlayerDataSource: BetterPlayerDataSource(
+          BetterPlayerDataSourceType.network,
+          playLink.first.url ?? 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          placeholder: CachedNetworkImage(imageUrl: arguments.poster ?? '-'),
+          cacheConfiguration: const BetterPlayerCacheConfiguration(useCache: true),
+          subtitles: [
+            BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.network, urls: subtitle.map((e) => e.subtitleUrl).toList(), selectedByDefault: true),
+          ],
         ),
-      ),
-      betterPlayerDataSource: BetterPlayerDataSource(
-        BetterPlayerDataSourceType.network,
-        playLink.first.url!,
-        subtitles: [
-          BetterPlayerSubtitlesSource(
-            selectedByDefault: true,
-            name: 'Default Subtitle',
-            type: BetterPlayerSubtitlesSourceType.network,
-            urls: subtitle.map((e) => e.subtitleUrl).toList(),
-          ),
-        ],
-      ),
-    );
-    Get.toNamed('/player', arguments: controller);
+      );
+      _isWaitPlay.value = false;
+      Get.toNamed('/player', arguments: controller);
+    } catch (e) {
+      Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi player');
+      _isWaitPlay.value = false;
+    }
   }
 
-  checkFavourite() async {
+  Future<void> checkFavourite() async {
     try {
       String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/${arguments.id}/0');
       if (response != '') {
@@ -132,7 +141,7 @@ class MovieDetailController extends GetxController {
     Get.snackbar('Berhasil', 'Film telah dihapus dari favorit');
   }
 
-  getMovieDetail() async {
+  Future<void> getMovieDetail() async {
     try {
       Map<String, dynamic> response = await apiService.get('$baseURL/getMovieDetails/${arguments.id}');
       MovieDetailResponseModel model = MovieDetailResponseModel.fromJson(response);
@@ -143,7 +152,7 @@ class MovieDetailController extends GetxController {
     }
   }
 
-  getTmdbMovieDetail() async {
+  Future<void> getTmdbMovieDetail() async {
     try {
       Map<String, dynamic> response = await apiService.get('$tmdbBaseURL/movie/${arguments.tmdbId}?api_key=$tmdbApiKey');
       TmdbMovieDetailResponseModel model = TmdbMovieDetailResponseModel.fromJson(response);
@@ -154,7 +163,7 @@ class MovieDetailController extends GetxController {
     }
   }
 
-  getSimilarMovie() async {
+  Future<void> getSimilarMovie() async {
     try {
       List<dynamic> response = await apiService.post(
         '$baseURL/getRelatedMovies/${arguments.id}/5',
@@ -165,7 +174,7 @@ class MovieDetailController extends GetxController {
       List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
       _similarMovie.value = data;
     } catch (e) {
-      return false;
+      return;
     }
   }
 }

@@ -1,22 +1,25 @@
-import 'package:better_player/better_player.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class PlayerController extends GetxController {
   static PlayerController instance = Get.find();
-  final BetterPlayerController controller = Get.arguments;
+  Rx<bool> showControlInit = Rx<bool>(false);
 
   @override
   void onInit() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+    Future.wait([
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []),
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]),
+    ]).then((value) {
+      showControlInit.value = true;
+    });
     super.onInit();
   }
 
   @override
   void onClose() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.portraitDown, DeviceOrientation.portraitUp, DeviceOrientation.landscapeRight]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.portraitUp, DeviceOrientation.landscapeRight]);
     super.onClose();
   }
 }
