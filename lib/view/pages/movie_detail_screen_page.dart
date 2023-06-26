@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/movie_controller.dart';
 import 'package:snplay/controllers/movie_detail_controller.dart';
 import 'package:snplay/view/entities/movie_entity.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
@@ -11,6 +12,7 @@ class MovieDetailScreen extends StatelessWidget {
   MovieDetailScreen({super.key});
   final Movie movie = Get.arguments;
   final MovieDetailController movieDetailController = Get.put(MovieDetailController());
+  final MovieController movieController = Get.put(MovieController());
 
   @override
   Widget build(BuildContext context) {
@@ -217,33 +219,56 @@ class MovieDetailScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          if (movieDetailController.similarMovie.isNotEmpty)
-                            Column(
-                              children: [
-                                const SizedBox(height: 5),
-                                SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
-                                const SizedBox(height: 10),
-                                AspectRatio(
-                                  aspectRatio: Get.width / 150,
-                                  child: ListView.separated(
-                                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                                    itemCount: movieDetailController.similarMovie.length,
-                                    itemBuilder: (context, index) => ItemCard(
-                                      poster: movieDetailController.similarMovie[index].poster ?? '-',
-                                      name: movieDetailController.similarMovie[index].name ?? '-',
-                                      onTap: () {
-                                        Get.delete<MovieDetailController>();
-                                        Get.toNamed('/movie', arguments: movieDetailController.similarMovie[index], preventDuplicates: false);
-                                      },
+                          (movieDetailController.similarMovie.isNotEmpty)
+                              ? Column(
+                                  children: [
+                                    const SizedBox(height: 5),
+                                    SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
+                                    const SizedBox(height: 10),
+                                    AspectRatio(
+                                      aspectRatio: Get.width / 150,
+                                      child: ListView.separated(
+                                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        separatorBuilder: (context, index) => const SizedBox(width: 10),
+                                        itemCount: movieDetailController.similarMovie.length,
+                                        itemBuilder: (context, index) => ItemCard(
+                                          poster: movieDetailController.similarMovie[index].poster ?? '-',
+                                          name: movieDetailController.similarMovie[index].name ?? '-',
+                                          onTap: () {
+                                            Get.delete<MovieDetailController>();
+                                            Get.toNamed('/movie', arguments: movieDetailController.similarMovie[index], preventDuplicates: false);
+                                          },
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                    SectionTitle(title: "Acak", detail: "Film di SnPlay", onTap: () {}),
+                                    const SizedBox(height: 10),
+                                    AspectRatio(
+                                      aspectRatio: Get.width / 150,
+                                      child: ListView.separated(
+                                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        separatorBuilder: (context, index) => const SizedBox(width: 10),
+                                        itemCount: movieController.randomMovie.length,
+                                        itemBuilder: (context, index) => ItemCard(
+                                          poster: movieController.randomMovie[index].poster ?? '-',
+                                          name: movieController.randomMovie[index].name ?? '-',
+                                          onTap: () {
+                                            Get.toNamed('/movie', arguments: movieController.randomMovie[index]);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          const SizedBox(height: 50),
+                          const SizedBox(height: 20),
                         ],
                       )
                     : SizedBox(
