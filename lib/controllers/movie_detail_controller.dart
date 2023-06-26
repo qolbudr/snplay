@@ -27,7 +27,8 @@ class MovieDetailController extends GetxController {
   final Rx<List<Movie>> _similarMovie = Rx<List<Movie>>([]);
   final Rx<bool> _isFavourite = Rx<bool>(false);
   final Rx<List<MoviePlaylink>> _moviePlaylink = Rx<List<MoviePlaylink>>([]);
-  final Rx<List<MovieSubtitle>> _movieSubtitle = Rx<List<MovieSubtitle>>([]);
+  final List<List<MovieSubtitle>> _subs = [];
+  final Map<String, String> _resolution = {};
 
   Status get detailStatus => _detailStatus.value;
   MovieDetail get movieDetail => _movieDetail.value;
@@ -43,7 +44,7 @@ class MovieDetailController extends GetxController {
   }
 
   initFunction() {
-    Future.wait([getTmdbMovieDetail(), getMovieDetail(), getSimilarMovie(), checkFavourite(), getMovieSubtitle(), getMoviePlayLink()]).then((value) {
+    Future.wait([getTmdbMovieDetail(), getMovieDetail(), getSimilarMovie(), checkFavourite(), getMoviePlayLink()]).then((value) {
       _detailStatus.value = Status.success;
     }).catchError((e) {
       _detailStatus.value = Status.error;
@@ -56,6 +57,7 @@ class MovieDetailController extends GetxController {
       List<dynamic> response = await apiService.get('$baseURL/getMoviePlayLinks/${arguments.id}');
       List<MoviePlaylink> playLink = response.map((e) => MoviePlaylinkResponseModel.fromJson(e).toEntity()).toList();
       _moviePlaylink.value = playLink;
+      getMovieSubtitle();
     } catch (e) {
       return;
     }
@@ -63,9 +65,16 @@ class MovieDetailController extends GetxController {
 
   Future<void> getMovieSubtitle() async {
     try {
-      List<dynamic> response = await apiService.post('$baseURL/getsubtitle/${arguments.id}/0', {});
-      List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
-      _movieSubtitle.value = subtitle;
+      for (MoviePlaylink item in _moviePlaylink.value) {
+        try {
+          List<dynamic> response = await apiService.post('$baseURL/getsubtitle/${item.id}/1', {});
+          List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
+          _resolution[item.quality ?? 'Auto'] = item.url ?? '-';
+          _subs.add(subtitle);
+        } catch (e) {
+          continue;
+        }
+      }
     } catch (e) {
       return;
     }
@@ -99,9 +108,17 @@ class MovieDetailController extends GetxController {
           _moviePlaylink.value.first.url ?? 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
           placeholder: CachedNetworkImage(imageUrl: arguments.poster ?? '-'),
           cacheConfiguration: const BetterPlayerCacheConfiguration(useCache: true),
-          subtitles: [
-            BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.network, urls: _movieSubtitle.value.map((e) => e.subtitleUrl).toList(), selectedByDefault: true),
-          ],
+          resolutions: _resolution,
+          subtitles: _subs
+              .map(
+                (item) => BetterPlayerSubtitlesSource(
+                  type: BetterPlayerSubtitlesSourceType.network,
+                  name: item.isNotEmpty ? item.first.language : 'Auto',
+                  selectedByDefault: true,
+                  urls: item.map((e) => e.subtitleUrl).toList(),
+                ),
+              )
+              .toList(),
         ),
       );
       Get.toNamed('/player', arguments: controller);
@@ -112,7 +129,7 @@ class MovieDetailController extends GetxController {
 
   Future<void> checkFavourite() async {
     try {
-      String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/${arguments.id}/0');
+      String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/${arguments.id}/1');
       if (response != '') {
         _isFavourite.value = true;
       } else {
@@ -124,13 +141,13 @@ class MovieDetailController extends GetxController {
   }
 
   addFavourite() async {
-    await apiService.get('$baseURL/favourite/SET/${loginController.user.id}/${arguments.id}/0');
+    await apiService.get('$baseURL/favourite/SET/${loginController.user.id}/${arguments.id}/1');
     _isFavourite.value = true;
     Get.snackbar('Berhasil', 'Film telah ditambahkan ke favorit');
   }
 
   removeFavourite() async {
-    await apiService.get('$baseURL/favourite/REMOVE/${loginController.user.id}/${arguments.id}/0');
+    await apiService.get('$baseURL/favourite/REMOVE/${loginController.user.id}/${arguments.id}/1');
     _isFavourite.value = false;
     Get.snackbar('Berhasil', 'Film telah dihapus dari favorit');
   }

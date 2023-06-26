@@ -6,11 +6,13 @@ import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/episode_response_model.dart';
+import 'package:snplay/models/movie_subtitle_response_model.dart';
 import 'package:snplay/models/season_response_model.dart';
 import 'package:snplay/models/series_detail_response_model.dart';
 import 'package:snplay/models/series_response_model.dart';
 import 'package:snplay/models/tmdb_series_detail_response.dart';
 import 'package:snplay/view/entities/episode_entity.dart';
+import 'package:snplay/view/entities/movie_subtitle_entity.dart';
 import 'package:snplay/view/entities/season_entity.dart';
 import 'package:snplay/view/entities/series_detail_entity.dart';
 import 'package:snplay/view/entities/series_entity.dart';
@@ -30,6 +32,7 @@ class SeriesDetailController extends GetxController {
   final Rx<List<Season>> _season = Rx<List<Season>>([]);
   final Rx<String?> _selectedSeason = Rx<String?>(null);
   final Rx<List<Episode>> _episode = Rx<List<Episode>>([]);
+  final Map<String, List<MovieSubtitle>> _subs = {};
 
   Status get detailStatus => _detailStatus.value;
   Status get episodeStatus => _episodeStatus.value;
@@ -63,7 +66,6 @@ class SeriesDetailController extends GetxController {
       getSeason(),
       getSimilarSeries(),
     ]).then((value) {
-      _detailStatus.value = Status.success;
       getEpisode();
     }).catchError((e) {
       _detailStatus.value = Status.error;
@@ -76,11 +78,24 @@ class SeriesDetailController extends GetxController {
       _episodeStatus.value = Status.loading;
       List<dynamic> response = await apiService.get('$baseURL/getEpisodes/$_selectedSeason');
       List<Episode> data = response.map((e) => EpisodeResponseModel.fromJson(e).toEntity()).toList();
-      _episode.value = data;
-      _episodeStatus.value = Status.success;
+      Future.wait(data.map((e) => getSubtitle(e.id)).toList()).then((value) {
+        _episode.value = data;
+        _episodeStatus.value = Status.success;
+        _detailStatus.value = Status.success;
+      }).catchError((e) {});
     } catch (e) {
       _episodeStatus.value = Status.error;
       Get.snackbar('Ada Kesalahan', getError(e));
+    }
+  }
+
+  Future<void> getSubtitle(String? id) async {
+    try {
+      List<dynamic> response = await apiService.post('$baseURL/getsubtitle/$id/2', {});
+      List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
+      _subs[id ?? ''] = subtitle;
+    } catch (e) {
+      return;
     }
   }
 
@@ -119,7 +134,20 @@ class SeriesDetailController extends GetxController {
         ),
         betterPlayerDataSourceList: episode
             .where((item) => item.url != '' && item.url != null)
-            .map((e) => BetterPlayerDataSource(BetterPlayerDataSourceType.network, e.url!, placeholder: CachedNetworkImage(imageUrl: e.episoadeImage!)))
+            .map(
+              (e) => BetterPlayerDataSource(BetterPlayerDataSourceType.network, e.url!,
+                  placeholder: CachedNetworkImage(
+                    imageUrl: e.episoadeImage!,
+                  ),
+                  subtitles: _subs[e.id]
+                      ?.map((sub) => BetterPlayerSubtitlesSource(
+                            type: BetterPlayerSubtitlesSourceType.network,
+                            name: sub.language,
+                            selectedByDefault: true,
+                            urls: [sub.subtitleUrl],
+                          ))
+                      .toList()),
+            )
             .toList(),
         betterPlayerPlaylistConfiguration: BetterPlayerPlaylistConfiguration(
           loopVideos: false,
@@ -147,7 +175,7 @@ class SeriesDetailController extends GetxController {
 
   Future<void> checkFavourite() async {
     try {
-      String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/${arguments.id}/1');
+      String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/${arguments.id}/2');
       if (response != '') {
         _isFavourite.value = true;
       } else {
@@ -159,13 +187,13 @@ class SeriesDetailController extends GetxController {
   }
 
   addFavourite() async {
-    await apiService.get('$baseURL/favourite/SET/${loginController.user.id}/${arguments.id}/1');
+    await apiService.get('$baseURL/favourite/SET/${loginController.user.id}/${arguments.id}/2');
     _isFavourite.value = true;
     Get.snackbar('Berhasil', 'Series telah ditambahkan ke favorit');
   }
 
   removeFavourite() async {
-    await apiService.get('$baseURL/favourite/REMOVE/${loginController.user.id}/${arguments.id}/1');
+    await apiService.get('$baseURL/favourite/REMOVE/${loginController.user.id}/${arguments.id}/2');
     _isFavourite.value = false;
     Get.snackbar('Berhasil', 'Series telah dihapus dari favorit');
   }

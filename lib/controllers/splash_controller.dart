@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/services/db_service.dart';
@@ -11,6 +12,8 @@ class SplashController extends GetxController {
   @override
   onInit() {
     super.onInit();
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     Future.delayed(const Duration(seconds: 3), () async {
       await checkUser();
     });

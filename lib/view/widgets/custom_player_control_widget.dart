@@ -26,8 +26,8 @@ class _CustomControlState extends State<CustomControl> {
   Timer? _checkBufferTimer;
   bool _isBuffer = false;
   Timer? _timer;
-  Map<String, BetterPlayerAsmsTrack> compiledTrack = {};
-  String _selectedTrack = 'Auto';
+  List<Map<String, dynamic>> compiledTracks = [];
+  String _selectedTrack = '';
   bool _enableSubtitle = true;
 
   Future<void> _showQualityModal() async {
@@ -37,23 +37,32 @@ class _CustomControlState extends State<CustomControl> {
       ),
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          color: secondaryColor,
-          child: ListView(
-            children: compiledTrack.entries
-                .map((e) => ListTile(
-                      title: Text(
-                        e.key,
-                        style: TextStyle(color: _selectedTrack == e.key ? primaryColor : Colors.white),
-                      ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        _selectedTrack = e.key;
-                        widget.controller.setTrack(e.value);
-                      },
-                    ))
-                .toList(),
-          ),
+        return Column(
+          children: [
+            const ListTile(
+              title: Text("Pilih Resolusi Video"),
+              subtitle: Text('Silahkan pilih resolusi video yang tersedia'),
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView(
+                children: List.generate(
+                  compiledTracks.length,
+                  (index) => ListTile(
+                    title: Text(
+                      compiledTracks[index]['name'],
+                      style: TextStyle(color: _selectedTrack == compiledTracks[index]['name'] ? primaryColor : Colors.white),
+                    ),
+                    onTap: () {
+                      if (_selectedTrack != compiledTracks[index]['name']) {
+                        widget.controller.setResolution(compiledTracks[index]['url']);
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -63,23 +72,29 @@ class _CustomControlState extends State<CustomControl> {
   void initState() {
     widget.controller.addEventsListener((e) {
       if (mounted) {
-        _getTrack();
         setState(() {});
       }
     });
+    _getTrack();
     _showControl();
     _checkBuffer();
     super.initState();
   }
 
   void _getTrack() {
-    List<BetterPlayerAsmsTrack> tracks = widget.controller.betterPlayerAsmsTracks;
-    for (var track in tracks) {
-      if (track.width != 0) {
-        compiledTrack['${track.height}p'] = track;
+    Map<String, String> tracks = widget.controller.betterPlayerDataSource?.resolutions ?? {};
+    tracks.forEach((key, value) {
+      if (compiledTracks.isEmpty) {
+        _selectedTrack = key;
       }
-    }
-    compiledTrack['Auto'] = BetterPlayerAsmsTrack.defaultTrack();
+
+      compiledTracks.add(
+        {
+          'name': key,
+          'url': value,
+        },
+      );
+    });
   }
 
   void _resetTimer() {
@@ -269,7 +284,21 @@ class _CustomControlState extends State<CustomControl> {
                                             const Spacer(),
                                             Row(
                                               children: [
-                                                IconButton(onPressed: () {}, icon: Icon(Icons.fast_rewind, size: Get.width * 0.03)),
+                                                IconButton(
+                                                    onPressed: () async {
+                                                      Duration? videoDuration = await widget.controller.videoPlayerController!.position;
+                                                      setState(() {
+                                                        if (widget.controller.isPlaying()!) {
+                                                          Duration rewindDuration = Duration(seconds: (videoDuration!.inSeconds - 10));
+                                                          if (rewindDuration < widget.controller.videoPlayerController!.value.duration!) {
+                                                            widget.controller.seekTo(const Duration(seconds: 0));
+                                                          } else {
+                                                            widget.controller.seekTo(rewindDuration);
+                                                          }
+                                                        }
+                                                      });
+                                                    },
+                                                    icon: Icon(Icons.fast_rewind, size: Get.width * 0.03)),
                                                 IconButton(onPressed: null, icon: Icon(Icons.skip_previous, size: Get.width * 0.03)),
                                                 GestureDetector(
                                                   onTap: () {

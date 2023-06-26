@@ -18,7 +18,7 @@ class PlayerController extends GetxController {
 
   @override
   void onClose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.portraitUp, DeviceOrientation.landscapeRight]);
     super.onClose();
   }

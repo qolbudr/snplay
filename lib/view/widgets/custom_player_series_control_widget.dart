@@ -33,7 +33,6 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
   bool _isBuffer = false;
   Timer? _timer;
   Map<String, BetterPlayerAsmsTrack> compiledTrack = {};
-  String _selectedTrack = 'Auto';
   bool _enableSubtitle = true;
   bool _isShowPlaylist = false;
   bool _isShowPL = false;
@@ -44,35 +43,6 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
       _isShowPlaylist = true;
       _isShowPL = true;
     });
-  }
-
-  Future<void> _showQualityModal() async {
-    showModalBottomSheet<void>(
-      constraints: const BoxConstraints(
-        maxWidth: 500,
-      ),
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          color: secondaryColor,
-          child: ListView(
-            children: compiledTrack.entries
-                .map((e) => ListTile(
-                      title: Text(
-                        e.key,
-                        style: TextStyle(color: _selectedTrack == e.key ? primaryColor : Colors.white),
-                      ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        _selectedTrack = e.key;
-                        widget.controller.setTrack(e.value);
-                      },
-                    ))
-                .toList(),
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -218,7 +188,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                             child: ListView.separated(
                               separatorBuilder: (context, index) => const Divider(),
                               itemCount: widget.playlistLength,
-                              itemBuilder: (context, index) => GestureDetector(
+                              itemBuilder: (context, index) => InkWell(
                                 onTap: () {
                                   widget.keyPlaylist.currentState?.betterPlayerPlaylistController?.setupDataSource(index);
                                   setState(() {
@@ -228,7 +198,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                   });
                                 },
                                 child: Container(
-                                  color: _index == index ? primaryColor.withOpacity(0.3) : secondaryColor,
+                                  color: _index == index ? primaryColor.withOpacity(0.3) : Colors.transparent,
                                   child: Padding(
                                     padding: const EdgeInsets.all(15),
                                     child: Row(
@@ -317,10 +287,10 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                                 const Spacer(),
                                                 Row(
                                                   children: [
-                                                    IconButton(
-                                                      onPressed: () => _showQualityModal(),
-                                                      icon: Icon(Icons.high_quality, size: Get.width * 0.03),
-                                                    ),
+                                                    // IconButton(
+                                                    //   onPressed: () => _showQualityModal(),
+                                                    //   icon: Icon(Icons.high_quality, size: Get.width * 0.03),
+                                                    // ),
                                                     IconButton(
                                                       onPressed: () {
                                                         if (_enableSubtitle) {
@@ -328,8 +298,13 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                                           widget.controller.setupSubtitleSource(BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.none));
                                                         } else {
                                                           _enableSubtitle = true;
-                                                          BetterPlayerSubtitlesSource source = widget.controller.betterPlayerSubtitlesSourceList.where((element) => element.selectedByDefault!).first;
-                                                          widget.controller.setupSubtitleSource(source);
+                                                          List<BetterPlayerSubtitlesSource> source =
+                                                              widget.controller.betterPlayerSubtitlesSourceList.where((element) => element.selectedByDefault ?? true).toList();
+                                                          if (source.isNotEmpty) {
+                                                            widget.controller.setupSubtitleSource(source.first);
+                                                          } else {
+                                                            Get.snackbar('Ada Kesalahan', 'Subtitle tidak ditemukan');
+                                                          }
                                                         }
                                                       },
                                                       icon: Icon(_enableSubtitle ? Icons.subtitles : Icons.subtitles_off, size: Get.width * 0.03),
@@ -396,7 +371,21 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                                 const Spacer(),
                                                 Row(
                                                   children: [
-                                                    IconButton(onPressed: () {}, icon: Icon(Icons.fast_rewind, size: Get.width * 0.03)),
+                                                    IconButton(
+                                                        onPressed: () async {
+                                                          Duration? videoDuration = await widget.controller.videoPlayerController!.position;
+                                                          setState(() {
+                                                            if (widget.controller.isPlaying()!) {
+                                                              Duration rewindDuration = Duration(seconds: (videoDuration!.inSeconds - 10));
+                                                              if (rewindDuration < widget.controller.videoPlayerController!.value.duration!) {
+                                                                widget.controller.seekTo(const Duration(seconds: 0));
+                                                              } else {
+                                                                widget.controller.seekTo(rewindDuration);
+                                                              }
+                                                            }
+                                                          });
+                                                        },
+                                                        icon: Icon(Icons.fast_rewind, size: Get.width * 0.03)),
                                                     IconButton(onPressed: null, icon: Icon(Icons.skip_previous, size: Get.width * 0.03)),
                                                     GestureDetector(
                                                       onTap: () {
