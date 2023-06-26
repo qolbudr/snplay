@@ -1,3 +1,5 @@
+import 'package:better_player/better_player.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
@@ -13,6 +15,7 @@ import 'package:snplay/view/entities/season_entity.dart';
 import 'package:snplay/view/entities/series_detail_entity.dart';
 import 'package:snplay/view/entities/series_entity.dart';
 import 'package:snplay/view/entities/tmdb_series_detail_entity.dart';
+import 'package:snplay/view/widgets/custom_player_series_control_widget.dart';
 
 class SeriesDetailController extends GetxController {
   static SeriesDetailController instance = Get.find();
@@ -82,27 +85,51 @@ class SeriesDetailController extends GetxController {
   }
 
   getPlayerSource(int index) async {
-    Get.snackbar(
-      'Tunggu',
-      'Mendapatkan informasi player',
-      titleText: Row(
-        children: const [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              color: primaryColor,
+    try {
+      if (index >= episode.where((item) => item.url != '' && item.url != null).length) {
+        throw Exception();
+      }
+      GlobalKey<BetterPlayerPlaylistState> keys = GlobalKey();
+
+      final BetterPlayerPlaylist player = BetterPlayerPlaylist(
+        key: keys,
+        betterPlayerConfiguration: BetterPlayerConfiguration(
+          fit: BoxFit.contain,
+          autoPlay: true,
+          showPlaceholderUntilPlay: true,
+          subtitlesConfiguration: const BetterPlayerSubtitlesConfiguration(
+            fontSize: 18,
+            backgroundColor: Colors.black,
+          ),
+          controlsConfiguration: BetterPlayerControlsConfiguration(
+            playerTheme: BetterPlayerTheme.custom,
+            showControlsOnInitialize: false,
+            overflowModalColor: secondaryColor,
+            overflowModalTextColor: Colors.white,
+            overflowMenuIconsColor: Colors.white,
+            customControlsBuilder: (controller, onPlayerVisibilityChanged) => CustomPlayerSeriesControl(
+              controller: controller,
+              onControlsVisibilityChanged: onPlayerVisibilityChanged,
+              episode: episode,
+              indexEpisode: index,
+              playlistLength: episode.where((item) => item.url != '' && item.url != null).length,
+              keyPlaylist: keys,
             ),
           ),
-          SizedBox(width: 10),
-          Text("Tunggu Sebentar")
-        ],
-      ),
-    );
-
-    // List<dynamic> response = await apiService.post('$baseURL/getsubtitle/${arguments.id}/1', {});
-    // List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
-    Get.toNamed('/player/series', arguments: '');
+        ),
+        betterPlayerDataSourceList: episode
+            .where((item) => item.url != '' && item.url != null)
+            .map((e) => BetterPlayerDataSource(BetterPlayerDataSourceType.network, e.url!, placeholder: CachedNetworkImage(imageUrl: e.episoadeImage!)))
+            .toList(),
+        betterPlayerPlaylistConfiguration: BetterPlayerPlaylistConfiguration(
+          loopVideos: false,
+          initialStartIndex: index,
+        ),
+      );
+      Get.toNamed('player/series', arguments: player);
+    } catch (e) {
+      Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi player');
+    }
   }
 
   Future<void> getSeason() async {

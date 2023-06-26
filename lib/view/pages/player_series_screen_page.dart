@@ -11,7 +11,7 @@ class PlayerSeries extends StatefulWidget {
 
 class _PlayerSeriesState extends State<PlayerSeries> {
   final playerController = Get.put(PlayerController());
-  final List<dynamic> arguments = Get.arguments;
+  final Widget arguments = Get.arguments;
 
   @override
   void initState() {
@@ -20,8 +20,8 @@ class _PlayerSeriesState extends State<PlayerSeries> {
 
   @override
   Widget build(BuildContext context) {
-    return const Material(
-      child: SizedBox(),
+    return Material(
+      child: arguments,
     );
   }
 }

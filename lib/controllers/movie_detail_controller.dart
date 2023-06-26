@@ -26,7 +26,8 @@ class MovieDetailController extends GetxController {
   final Rx<TmdbMovieDetail> _tmdbMovieDetail = Rx<TmdbMovieDetail>(TmdbMovieDetail());
   final Rx<List<Movie>> _similarMovie = Rx<List<Movie>>([]);
   final Rx<bool> _isFavourite = Rx<bool>(false);
-  final Rx<bool> _isWaitPlay = Rx<bool>(false);
+  final Rx<List<MoviePlaylink>> _moviePlaylink = Rx<List<MoviePlaylink>>([]);
+  final Rx<List<MovieSubtitle>> _movieSubtitle = Rx<List<MovieSubtitle>>([]);
 
   Status get detailStatus => _detailStatus.value;
   MovieDetail get movieDetail => _movieDetail.value;
@@ -34,7 +35,6 @@ class MovieDetailController extends GetxController {
   TmdbMovieDetail get tmdbMovieDetail => _tmdbMovieDetail.value;
   final Movie arguments = Get.arguments;
   bool get isFavourite => _isFavourite.value;
-  bool get isWaitPlay => _isWaitPlay.value;
 
   @override
   void onInit() {
@@ -43,7 +43,7 @@ class MovieDetailController extends GetxController {
   }
 
   initFunction() {
-    Future.wait([getTmdbMovieDetail(), getMovieDetail(), getSimilarMovie(), checkFavourite()]).then((value) {
+    Future.wait([getTmdbMovieDetail(), getMovieDetail(), getSimilarMovie(), checkFavourite(), getMovieSubtitle(), getMoviePlayLink()]).then((value) {
       _detailStatus.value = Status.success;
     }).catchError((e) {
       _detailStatus.value = Status.error;
@@ -51,32 +51,28 @@ class MovieDetailController extends GetxController {
     });
   }
 
-  getPlayerSource() async {
+  Future<void> getMoviePlayLink() async {
     try {
-      Get.snackbar('Loading', 'Mendapatkan informasi player',
-          titleText: Row(
-            children: const [
-              SizedBox(
-                width: 25,
-                height: 25,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: primaryColor,
-                ),
-              ),
-              SizedBox(width: 15),
-              Text(
-                'Loading',
-                style: h5,
-              )
-            ],
-          ),
-          isDismissible: false);
-      _isWaitPlay.value = true;
       List<dynamic> response = await apiService.get('$baseURL/getMoviePlayLinks/${arguments.id}');
       List<MoviePlaylink> playLink = response.map((e) => MoviePlaylinkResponseModel.fromJson(e).toEntity()).toList();
-      response = await apiService.post('$baseURL/getsubtitle/${arguments.id}/0', {});
+      _moviePlaylink.value = playLink;
+    } catch (e) {
+      return;
+    }
+  }
+
+  Future<void> getMovieSubtitle() async {
+    try {
+      List<dynamic> response = await apiService.post('$baseURL/getsubtitle/${arguments.id}/0', {});
       List<MovieSubtitle> subtitle = response.map((e) => MovieSubtitleResponseModel.fromJson(e).toEntity()).toList();
+      _movieSubtitle.value = subtitle;
+    } catch (e) {
+      return;
+    }
+  }
+
+  getPlayerSource() async {
+    try {
       final BetterPlayerController controller = BetterPlayerController(
         BetterPlayerConfiguration(
           fit: BoxFit.contain,
@@ -100,19 +96,17 @@ class MovieDetailController extends GetxController {
         ),
         betterPlayerDataSource: BetterPlayerDataSource(
           BetterPlayerDataSourceType.network,
-          playLink.first.url ?? 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          _moviePlaylink.value.first.url ?? 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
           placeholder: CachedNetworkImage(imageUrl: arguments.poster ?? '-'),
           cacheConfiguration: const BetterPlayerCacheConfiguration(useCache: true),
           subtitles: [
-            BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.network, urls: subtitle.map((e) => e.subtitleUrl).toList(), selectedByDefault: true),
+            BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.network, urls: _movieSubtitle.value.map((e) => e.subtitleUrl).toList(), selectedByDefault: true),
           ],
         ),
       );
-      _isWaitPlay.value = false;
       Get.toNamed('/player', arguments: controller);
     } catch (e) {
       Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi player');
-      _isWaitPlay.value = false;
     }
   }
 
