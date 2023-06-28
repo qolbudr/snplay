@@ -68,5 +68,5 @@ class ItemResponseModel {
     return data;
   }
 
-  Item toEntity() => Item(id: id, tmdbId: tMDBID, poster: poster, name: name ?? '-', banner: banner, genres: genres ?? '-', type: type ?? '-');
+  Item toEntity() => Item(id: id, tmdbId: tMDBID, poster: poster, name: name ?? '-', banner: banner, genres: genres ?? '-', type: type ?? '-', status: status ?? '0');
 }

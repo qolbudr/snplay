@@ -54,7 +54,7 @@ class HomeController extends GetxController {
       _recentMovieStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/Movies");
       List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
-      _recentMovie.value = data;
+      _recentMovie.value = data.where((item) => item.status == '1').toList();
       _recentMovieStatus.value = Status.success;
     } catch (e) {
       _recentMovieStatus.value = Status.error;
@@ -66,7 +66,7 @@ class HomeController extends GetxController {
       _recentSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/WebSeries");
       List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
-      _recentSeries.value = data;
+      _recentSeries.value = data.where((item) => item.status == '1').toList();
       _recentSeriesStatus.value = Status.success;
     } catch (e) {
       _recentSeriesStatus.value = Status.error;

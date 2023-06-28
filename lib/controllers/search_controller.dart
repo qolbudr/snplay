@@ -60,7 +60,7 @@ class SearchController extends GetxController {
           _searchStatus.value = Status.loading;
           List<dynamic> response = await apiService.get('$baseURL/searchContent/$keyword/0');
           List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
-          _result.value = data;
+          _result.value = data.where((item) => item.status == '1').toList();
           _searchStatus.value = Status.success;
         });
       } else {

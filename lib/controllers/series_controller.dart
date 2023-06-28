@@ -55,7 +55,7 @@ class SeriesCotroller extends GetxController {
       _recentSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/WebSeries");
       List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
-      _recentSeries.value = data;
+      _recentSeries.value = data.where((item) => item.status == '1').toList();
       _recentSeriesStatus.value = Status.success;
     } catch (e) {
       _recentSeriesStatus.value = Status.error;
@@ -67,7 +67,7 @@ class SeriesCotroller extends GetxController {
       _randomSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRandWebSeries");
       List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
-      _randomSeries.value = data;
+      _randomSeries.value = data.where((item) => item.status == '1').toList();
       _randomSeriesStatus.value = Status.success;
     } catch (e) {
       _randomSeriesStatus.value = Status.error;

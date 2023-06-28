@@ -54,7 +54,7 @@ class MovieController extends GetxController {
       _recentMovieStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/Movies");
       List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
-      _recentMovie.value = data;
+      _recentMovie.value = data.where((item) => item.status == '1').toList();
       _recentMovieStatus.value = Status.success;
     } catch (e) {
       _recentMovieStatus.value = Status.error;
@@ -66,7 +66,7 @@ class MovieController extends GetxController {
       _randomMovieStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRandMovies");
       List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
-      _randomMovie.value = data;
+      _randomMovie.value = data.where((item) => item.status == '1').toList();
       _randomMovieStatus.value = Status.success;
     } catch (e) {
       _randomMovieStatus.value = Status.error;
