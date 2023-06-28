@@ -61,29 +61,32 @@ class SeriesScreen extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         SectionTitle(title: "Series Baru Ditambahkan", detail: "Series di SnPlay", onTap: () {}),
-        const SizedBox(height: 10),
         Obx(
           () => seriesCotroller.recentSeriesStatus != Status.success
-              ? AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: 5,
-                    itemBuilder: (context, index) => const ItemCardLoading(),
+              ? GridView.count(
+                  padding: const EdgeInsets.all(15),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 50 / 80,
+                  children: List.generate(
+                    12,
+                    (index) => const ItemCardLoading(),
                   ),
                 )
-              : AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: seriesCotroller.recentSeries.length,
-                    itemBuilder: (context, index) => ItemCard(
+              : GridView.count(
+                  padding: const EdgeInsets.all(15),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 50 / 180,
+                  children: List.generate(
+                    seriesCotroller.recentSeries.length,
+                    (index) => ItemCard(
                       poster: seriesCotroller.recentSeries[index].poster ?? '-',
                       name: seriesCotroller.recentSeries[index].name ?? '-',
                       onTap: () {
@@ -93,40 +96,40 @@ class SeriesScreen extends StatelessWidget {
                   ),
                 ),
         ),
-        const SizedBox(height: 20),
-        SectionTitle(title: "Acak", detail: "Series di SnPlay", onTap: () {}),
-        const SizedBox(height: 10),
-        Obx(
-          () => seriesCotroller.randomSeriesStatus != Status.success
-              ? AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: 5,
-                    itemBuilder: (context, index) => const ItemCardLoading(),
-                  ),
-                )
-              : AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: seriesCotroller.randomSeries.length,
-                    itemBuilder: (context, index) => ItemCard(
-                      poster: seriesCotroller.randomSeries[index].poster ?? '-',
-                      name: seriesCotroller.randomSeries[index].name ?? '-',
-                      onTap: () {
-                        Get.toNamed('/series', arguments: seriesCotroller.randomSeries[index]);
-                      },
-                    ),
-                  ),
-                ),
-        ),
+        // const SizedBox(height: 20),
+        // SectionTitle(title: "Acak", detail: "Series di SnPlay", onTap: () {}),
+        // const SizedBox(height: 10),
+        // Obx(
+        //   () => seriesCotroller.randomSeriesStatus != Status.success
+        //       ? AspectRatio(
+        //           aspectRatio: Get.width / 150,
+        //           child: ListView.separated(
+        //             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+        //             shrinkWrap: true,
+        //             scrollDirection: Axis.horizontal,
+        //             separatorBuilder: (context, index) => const SizedBox(width: 10),
+        //             itemCount: 5,
+        //             itemBuilder: (context, index) => const ItemCardLoading(),
+        //           ),
+        //         )
+        //       : AspectRatio(
+        //           aspectRatio: Get.width / 150,
+        //           child: ListView.separated(
+        //             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+        //             shrinkWrap: true,
+        //             scrollDirection: Axis.horizontal,
+        //             separatorBuilder: (context, index) => const SizedBox(width: 10),
+        //             itemCount: seriesCotroller.randomSeries.length,
+        //             itemBuilder: (context, index) => ItemCard(
+        //               poster: seriesCotroller.randomSeries[index].poster ?? '-',
+        //               name: seriesCotroller.randomSeries[index].name ?? '-',
+        //               onTap: () {
+        //                 Get.toNamed('/series', arguments: seriesCotroller.randomSeries[index]);
+        //               },
+        //             ),
+        //           ),
+        //         ),
+        // ),
         const SizedBox(height: 50),
       ],
     );

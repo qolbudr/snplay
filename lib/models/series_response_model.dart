@@ -1,4 +1,4 @@
-import 'package:snplay/view/entities/series_entity.dart';
+import 'package:snplay/view/entities/item_entity.dart';
 
 class SeriesResponseModel {
   String? id;
@@ -52,5 +52,5 @@ class SeriesResponseModel {
     return data;
   }
 
-  Series toEntity() => Series(id: id, poster: poster, name: name, banner: banner, tmdbId: tMDBID, genres: genres ?? '-');
+  Item toEntity() => Item(id: id, poster: poster, name: name, banner: banner, tmdbId: tMDBID, genres: genres ?? '-');
 }

@@ -1,4 +1,4 @@
-class MovieDetail {
+class ItemDetail {
   String? id;
   String? tmdbId;
   String? poster;
@@ -10,5 +10,5 @@ class MovieDetail {
   String? description;
   String? type;
 
-  MovieDetail({this.id, this.tmdbId, this.poster, this.banner, this.genre, this.releaseDate, this.runtime, this.name, this.description, this.type});
+  ItemDetail({this.id, this.tmdbId, this.poster, this.banner, this.genre, this.releaseDate, this.runtime, this.name, this.description, this.type});
 }

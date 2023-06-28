@@ -1,4 +1,4 @@
-import 'package:snplay/view/entities/movie_entity.dart';
+import 'package:snplay/view/entities/item_entity.dart';
 
 class MovieResponseModel {
   String? id;
@@ -68,5 +68,5 @@ class MovieResponseModel {
     return data;
   }
 
-  Movie toEntity() => Movie(id: id, tmdbId: tMDBID, poster: poster, name: name ?? '-', banner: banner, genres: genres ?? '-');
+  Item toEntity() => Item(id: id, tmdbId: tMDBID, poster: poster, name: name ?? '-', banner: banner, genres: genres ?? '-');
 }

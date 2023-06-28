@@ -19,7 +19,7 @@ class SectionTitle extends StatelessWidget {
             Row(
               children: [
                 Text(title, style: h4),
-                const Icon(Icons.chevron_right_outlined),
+                // const Icon(Icons.chevron_right_outlined),
               ],
             ),
             Text(detail, style: h5.copyWith(color: Colors.white.withOpacity(0.5))),

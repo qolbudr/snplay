@@ -1,4 +1,4 @@
-import 'package:snplay/view/entities/series_detail_entity.dart';
+import 'package:snplay/view/entities/item_detail_entity.dart';
 
 class SeriesDetailResponseModel {
   String? id;
@@ -68,7 +68,7 @@ class SeriesDetailResponseModel {
     return data;
   }
 
-  SeriesDetail toEntity() => SeriesDetail(
+  ItemDetail toEntity() => ItemDetail(
         id: id,
         tmdbId: tMDBID,
         poster: poster,

@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/movie_controller.dart';
 import 'package:snplay/controllers/movie_detail_controller.dart';
-import 'package:snplay/view/entities/movie_entity.dart';
+import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
 import 'package:snplay/view/widgets/section_title_widget.dart';
 
 class MovieDetailScreen extends StatelessWidget {
   MovieDetailScreen({super.key});
-  final Movie movie = Get.arguments;
+  final Item movie = Get.arguments;
   final MovieDetailController movieDetailController = Get.put(MovieDetailController());
   final MovieController movieController = Get.put(MovieController());
 

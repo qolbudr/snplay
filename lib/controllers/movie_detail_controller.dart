@@ -10,8 +10,8 @@ import 'package:snplay/models/movie_playlink_response_model.dart';
 import 'package:snplay/models/movie_response_model.dart';
 import 'package:snplay/models/movie_subtitle_response_model.dart';
 import 'package:snplay/models/tmdb_movie_detail_response_model.dart';
-import 'package:snplay/view/entities/movie_detail_entity.dart';
-import 'package:snplay/view/entities/movie_entity.dart';
+import 'package:snplay/view/entities/item_detail_entity.dart';
+import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/entities/movie_playlink_entity.dart';
 import 'package:snplay/view/entities/movie_subtitle_entity.dart';
 import 'package:snplay/view/entities/tmdb_movie_detail_entity.dart';
@@ -22,19 +22,19 @@ class MovieDetailController extends GetxController {
   final LoginController loginController = Get.put(LoginController());
   final apiService = ApiService();
   final Rx<Status> _detailStatus = Rx<Status>(Status.empty);
-  final Rx<MovieDetail> _movieDetail = Rx<MovieDetail>(MovieDetail());
+  final Rx<ItemDetail> _movieDetail = Rx<ItemDetail>(ItemDetail());
   final Rx<TmdbMovieDetail> _tmdbMovieDetail = Rx<TmdbMovieDetail>(TmdbMovieDetail());
-  final Rx<List<Movie>> _similarMovie = Rx<List<Movie>>([]);
+  final Rx<List<Item>> _similarMovie = Rx<List<Item>>([]);
   final Rx<bool> _isFavourite = Rx<bool>(false);
   final Rx<List<MoviePlaylink>> _moviePlaylink = Rx<List<MoviePlaylink>>([]);
   final List<List<MovieSubtitle>> _subs = [];
   final Map<String, String> _resolution = {};
 
   Status get detailStatus => _detailStatus.value;
-  MovieDetail get movieDetail => _movieDetail.value;
-  List<Movie> get similarMovie => _similarMovie.value;
+  ItemDetail get movieDetail => _movieDetail.value;
+  List<Item> get similarMovie => _similarMovie.value;
   TmdbMovieDetail get tmdbMovieDetail => _tmdbMovieDetail.value;
-  final Movie arguments = Get.arguments;
+  final Item arguments = Get.arguments;
   bool get isFavourite => _isFavourite.value;
 
   @override
@@ -169,7 +169,7 @@ class MovieDetailController extends GetxController {
     try {
       Map<String, dynamic> response = await apiService.get('$baseURL/getMovieDetails/${arguments.id}');
       MovieDetailResponseModel model = MovieDetailResponseModel.fromJson(response);
-      MovieDetail data = model.toEntity();
+      ItemDetail data = model.toEntity();
       _movieDetail.value = data;
     } catch (e) {
       rethrow;
@@ -195,7 +195,7 @@ class MovieDetailController extends GetxController {
           'genres': arguments.genres,
         },
       );
-      List<Movie> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
       _similarMovie.value = data;
     } catch (e) {
       return;

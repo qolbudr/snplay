@@ -12,10 +12,10 @@ import 'package:snplay/models/series_detail_response_model.dart';
 import 'package:snplay/models/series_response_model.dart';
 import 'package:snplay/models/tmdb_series_detail_response.dart';
 import 'package:snplay/view/entities/episode_entity.dart';
+import 'package:snplay/view/entities/item_detail_entity.dart';
+import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/entities/movie_subtitle_entity.dart';
 import 'package:snplay/view/entities/season_entity.dart';
-import 'package:snplay/view/entities/series_detail_entity.dart';
-import 'package:snplay/view/entities/series_entity.dart';
 import 'package:snplay/view/entities/tmdb_series_detail_entity.dart';
 import 'package:snplay/view/widgets/custom_player_series_control_widget.dart';
 
@@ -25,9 +25,9 @@ class SeriesDetailController extends GetxController {
   final apiService = ApiService();
   final Rx<Status> _detailStatus = Rx<Status>(Status.empty);
   final Rx<Status> _episodeStatus = Rx<Status>(Status.empty);
-  final Rx<SeriesDetail> _seriesDetail = Rx<SeriesDetail>(SeriesDetail());
+  final Rx<ItemDetail> _seriesDetail = Rx<ItemDetail>(ItemDetail());
   final Rx<TmdbSeriesDetail> _tmdbSeriesDetail = Rx<TmdbSeriesDetail>(TmdbSeriesDetail());
-  final Rx<List<Series>> _similarSeries = Rx<List<Series>>([]);
+  final Rx<List<Item>> _similarSeries = Rx<List<Item>>([]);
   final Rx<bool> _isFavourite = Rx<bool>(false);
   final Rx<List<Season>> _season = Rx<List<Season>>([]);
   final Rx<String?> _selectedSeason = Rx<String?>(null);
@@ -36,10 +36,10 @@ class SeriesDetailController extends GetxController {
 
   Status get detailStatus => _detailStatus.value;
   Status get episodeStatus => _episodeStatus.value;
-  SeriesDetail get seriesDetail => _seriesDetail.value;
-  List<Series> get similarSeries => _similarSeries.value;
+  ItemDetail get seriesDetail => _seriesDetail.value;
+  List<Item> get similarSeries => _similarSeries.value;
   TmdbSeriesDetail get tmdbSeriesDetail => _tmdbSeriesDetail.value;
-  final Series arguments = Get.arguments;
+  final Item arguments = Get.arguments;
   bool get isFavourite => _isFavourite.value;
   List<Season> get season => _season.value;
   List<Episode> get episode => _episode.value;
@@ -216,7 +216,7 @@ class SeriesDetailController extends GetxController {
     try {
       Map<String, dynamic> response = await apiService.get('$baseURL/getWebSeriesDetails/${arguments.id}');
       SeriesDetailResponseModel model = SeriesDetailResponseModel.fromJson(response);
-      SeriesDetail data = model.toEntity();
+      ItemDetail data = model.toEntity();
       _seriesDetail.value = data;
     } catch (e) {
       rethrow;
@@ -242,7 +242,7 @@ class SeriesDetailController extends GetxController {
           'genres': arguments.genres,
         },
       );
-      List<Series> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
       _similarSeries.value = data;
     } catch (e) {
       return;

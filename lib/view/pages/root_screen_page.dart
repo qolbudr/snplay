@@ -95,7 +95,7 @@ class Root extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => Get.toNamed('/search'),
             icon: const Icon(Icons.search_outlined),
           ),
         ],

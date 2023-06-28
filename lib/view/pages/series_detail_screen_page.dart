@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/series_detail_controller.dart';
-import 'package:snplay/view/entities/series_entity.dart';
+import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
 import 'package:snplay/view/widgets/section_title_widget.dart';
 
 class SeriesDetailScreen extends StatelessWidget {
   SeriesDetailScreen({super.key});
-  final Series series = Get.arguments;
+  final Item series = Get.arguments;
   final SeriesDetailController seriesDetailController = Get.put(SeriesDetailController());
 
   @override

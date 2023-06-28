@@ -61,29 +61,32 @@ class MovieScreen extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         SectionTitle(title: "Film Baru Ditambahkan", detail: "Film di SnPlay", onTap: () {}),
-        const SizedBox(height: 10),
         Obx(
           () => movieController.recentMovieStatus != Status.success
-              ? AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: 5,
-                    itemBuilder: (context, index) => const ItemCardLoading(),
+              ? GridView.count(
+                  padding: const EdgeInsets.all(15),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 50 / 80,
+                  children: List.generate(
+                    12,
+                    (index) => const ItemCardLoading(),
                   ),
                 )
-              : AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: movieController.recentMovie.length,
-                    itemBuilder: (context, index) => ItemCard(
+              : GridView.count(
+                  padding: const EdgeInsets.all(15),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 50 / 180,
+                  children: List.generate(
+                    movieController.recentMovie.length,
+                    (index) => ItemCard(
                       poster: movieController.recentMovie[index].poster ?? '-',
                       name: movieController.recentMovie[index].name ?? '-',
                       onTap: () {
@@ -92,41 +95,58 @@ class MovieScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+          // AspectRatio(
+          //   aspectRatio: Get.width / 150,
+          //   child: ListView.separated(
+          //     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+          //     shrinkWrap: true,
+          //     scrollDirection: Axis.horizontal,
+          //     separatorBuilder: (context, index) => const SizedBox(width: 10),
+          //     itemCount: movieController.recentMovie.length,
+          //     itemBuilder: (context, index) => ItemCard(
+          //       poster: movieController.recentMovie[index].poster ?? '-',
+          //       name: movieController.recentMovie[index].name ?? '-',
+          //       onTap: () {
+          //         Get.toNamed('/movie', arguments: movieController.recentMovie[index]);
+          //       },
+          //     ),
+          //   ),
+          // ),
         ),
-        const SizedBox(height: 20),
-        SectionTitle(title: "Acak", detail: "Film di SnPlay", onTap: () {}),
-        const SizedBox(height: 10),
-        Obx(
-          () => movieController.randomMovieStatus != Status.success
-              ? AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: 5,
-                    itemBuilder: (context, index) => const ItemCardLoading(),
-                  ),
-                )
-              : AspectRatio(
-                  aspectRatio: Get.width / 150,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                    itemCount: movieController.randomMovie.length,
-                    itemBuilder: (context, index) => ItemCard(
-                      poster: movieController.randomMovie[index].poster ?? '-',
-                      name: movieController.randomMovie[index].name ?? '-',
-                      onTap: () {
-                        Get.toNamed('/movie', arguments: movieController.randomMovie[index]);
-                      },
-                    ),
-                  ),
-                ),
-        ),
+        // const SizedBox(height: 20),
+        // SectionTitle(title: "Acak", detail: "Film di SnPlay", onTap: () {}),
+        // const SizedBox(height: 10),
+        // Obx(
+        //   () => movieController.randomMovieStatus != Status.success
+        //       ? AspectRatio(
+        //           aspectRatio: Get.width / 150,
+        //           child: ListView.separated(
+        //             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+        //             shrinkWrap: true,
+        //             scrollDirection: Axis.horizontal,
+        //             separatorBuilder: (context, index) => const SizedBox(width: 10),
+        //             itemCount: 5,
+        //             itemBuilder: (context, index) => const ItemCardLoading(),
+        //           ),
+        //         )
+        //       : AspectRatio(
+        //           aspectRatio: Get.width / 150,
+        //           child: ListView.separated(
+        //             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+        //             shrinkWrap: true,
+        //             scrollDirection: Axis.horizontal,
+        //             separatorBuilder: (context, index) => const SizedBox(width: 10),
+        //             itemCount: movieController.randomMovie.length,
+        //             itemBuilder: (context, index) => ItemCard(
+        //               poster: movieController.randomMovie[index].poster ?? '-',
+        //               name: movieController.randomMovie[index].name ?? '-',
+        //               onTap: () {
+        //                 Get.toNamed('/movie', arguments: movieController.randomMovie[index]);
+        //               },
+        //             ),
+        //           ),
+        //         ),
+        // ),
         const SizedBox(height: 50),
       ],
     );

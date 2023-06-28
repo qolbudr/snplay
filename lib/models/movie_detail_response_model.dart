@@ -1,4 +1,4 @@
-import 'package:snplay/view/entities/movie_detail_entity.dart';
+import 'package:snplay/view/entities/item_detail_entity.dart';
 
 class MovieDetailResponseModel {
   String? id;
@@ -68,7 +68,7 @@ class MovieDetailResponseModel {
     return data;
   }
 
-  MovieDetail toEntity() => MovieDetail(
+  ItemDetail toEntity() => ItemDetail(
         id: id,
         tmdbId: tMDBID,
         poster: poster,
