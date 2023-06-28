@@ -293,6 +293,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                                     // ),
                                                     IconButton(
                                                       onPressed: () {
+                                                        _resetTimer();
                                                         if (_enableSubtitle) {
                                                           _enableSubtitle = false;
                                                           widget.controller.setupSubtitleSource(BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.none));
@@ -310,7 +311,10 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                                       icon: Icon(_enableSubtitle ? Icons.subtitles : Icons.subtitles_off, size: Get.width * 0.03),
                                                     ),
                                                     IconButton(
-                                                      onPressed: () => _showPlaylist(),
+                                                      onPressed: () {
+                                                        _resetTimer();
+                                                        _showPlaylist();
+                                                      },
                                                       icon: Icon(Icons.playlist_play_outlined, size: Get.width * 0.03),
                                                     ),
                                                   ],
@@ -373,6 +377,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                                   children: [
                                                     IconButton(
                                                         onPressed: () async {
+                                                          _resetTimer();
                                                           Duration? videoDuration = await widget.controller.videoPlayerController!.position;
                                                           setState(() {
                                                             if (widget.controller.isPlaying()!) {
@@ -411,6 +416,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                                                     IconButton(onPressed: null, icon: Icon(Icons.skip_next, size: Get.width * 0.03)),
                                                     IconButton(
                                                         onPressed: () async {
+                                                          _resetTimer();
                                                           Duration? videoDuration = await widget.controller.videoPlayerController!.position;
                                                           setState(() {
                                                             if (widget.controller.isPlaying()!) {

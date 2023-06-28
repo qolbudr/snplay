@@ -50,6 +50,19 @@ class MovieDetailController extends GetxController {
       _detailStatus.value = Status.error;
       Get.snackbar('Ada Kesalahan', getError(e));
     });
+    addViewLog();
+  }
+
+  Future<void> addViewLog() async {
+    try {
+      await apiService.post('$baseURL/addviewlog', {
+        'user_id': loginController.user.id,
+        'content_id': arguments.id,
+        'content_type': '1',
+      });
+    } catch (e) {
+      return;
+    }
   }
 
   Future<void> getMoviePlayLink() async {
