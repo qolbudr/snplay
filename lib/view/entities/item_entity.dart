@@ -5,6 +5,7 @@ class Item {
   String? name;
   String? banner;
   String? genres;
+  String type;
 
-  Item({this.id, this.tmdbId, this.poster, this.name, this.banner, this.genres});
+  Item({this.id, this.tmdbId, this.poster, this.name, this.banner, this.genres, required this.type});
 }
