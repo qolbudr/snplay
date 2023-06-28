@@ -79,14 +79,19 @@ class Search extends StatelessWidget {
                                 itemCount: searchController.genre.length,
                                 separatorBuilder: (context, index) => const SizedBox(width: 10),
                                 scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) => Container(
-                                  decoration: BoxDecoration(
-                                    color: secondaryColor,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    searchController.genre[index].name,
+                                itemBuilder: (context, index) => GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed('/genre', arguments: searchController.genre[index].name);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: secondaryColor,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    padding: const EdgeInsets.all(10),
+                                    child: Text(
+                                      searchController.genre[index].name,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -164,7 +169,7 @@ class Search extends StatelessWidget {
                                     poster: seriesController.recentSeries[index].poster ?? '-',
                                     name: seriesController.recentSeries[index].name ?? '-',
                                     onTap: () {
-                                      Get.toNamed('/movie', arguments: seriesController.recentSeries[index]);
+                                      Get.toNamed('/series', arguments: seriesController.recentSeries[index]);
                                     },
                                   ),
                                 ),

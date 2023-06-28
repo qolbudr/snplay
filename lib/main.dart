@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/view/pages/auth/login_page.dart';
 import 'package:snplay/view/pages/auth/login_selection_page.dart';
+import 'package:snplay/view/pages/genre_screen_page.dart';
 import 'package:snplay/view/pages/movie_detail_screen_page.dart';
 import 'package:snplay/view/pages/player_screen_page.dart';
 import 'package:snplay/view/pages/player_series_screen_page.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/player', page: () => Player(), transition: Transition.cupertino),
         GetPage(name: '/player/series', page: () => const PlayerSeries(), transition: Transition.cupertino),
         GetPage(name: '/search', page: () => Search(), transition: Transition.cupertino),
+        GetPage(name: '/genre', page: () => GenreScreen(), transition: Transition.cupertino),
       ],
     );
   }
