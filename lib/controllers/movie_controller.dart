@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/movie_banner_response_model.dart';
-import 'package:snplay/models/movie_response_model.dart';
+import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/view/entities/movie_banner_entity.dart';
 import 'package:snplay/view/entities/item_entity.dart';
 
@@ -53,7 +53,7 @@ class MovieController extends GetxController {
     try {
       _recentMovieStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/Movies");
-      List<Item> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _recentMovie.value = data;
       _recentMovieStatus.value = Status.success;
     } catch (e) {
@@ -65,7 +65,7 @@ class MovieController extends GetxController {
     try {
       _randomMovieStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRandMovies");
-      List<Item> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _randomMovie.value = data;
       _randomMovieStatus.value = Status.success;
     } catch (e) {

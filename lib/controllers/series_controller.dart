@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/models/series_banner_response_model.dart';
-import 'package:snplay/models/series_response_model.dart';
 import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/entities/series_banner_entity.dart';
 import 'services/api_service.dart';
@@ -54,7 +54,7 @@ class SeriesCotroller extends GetxController {
     try {
       _recentSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/WebSeries");
-      List<Item> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _recentSeries.value = data;
       _recentSeriesStatus.value = Status.success;
     } catch (e) {
@@ -66,7 +66,7 @@ class SeriesCotroller extends GetxController {
     try {
       _randomSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRandWebSeries");
-      List<Item> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _randomSeries.value = data;
       _randomSeriesStatus.value = Status.success;
     } catch (e) {

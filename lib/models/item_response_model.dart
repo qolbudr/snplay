@@ -1,6 +1,6 @@
 import 'package:snplay/view/entities/item_entity.dart';
 
-class MovieResponseModel {
+class ItemResponseModel {
   String? id;
   String? tMDBID;
   String? name;
@@ -16,7 +16,7 @@ class MovieResponseModel {
   String? status;
   String? contentType;
 
-  MovieResponseModel(
+  ItemResponseModel(
       {this.id,
       this.tMDBID,
       this.name,
@@ -32,7 +32,7 @@ class MovieResponseModel {
       this.status,
       this.contentType});
 
-  MovieResponseModel.fromJson(Map<String, dynamic> json) {
+  ItemResponseModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     tMDBID = json['TMDB_ID'];
     name = json['name'];

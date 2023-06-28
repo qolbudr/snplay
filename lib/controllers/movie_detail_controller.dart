@@ -7,7 +7,7 @@ import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/movie_detail_response_model.dart';
 import 'package:snplay/models/movie_playlink_response_model.dart';
-import 'package:snplay/models/movie_response_model.dart';
+import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/models/movie_subtitle_response_model.dart';
 import 'package:snplay/models/tmdb_movie_detail_response_model.dart';
 import 'package:snplay/view/entities/item_detail_entity.dart';
@@ -195,7 +195,7 @@ class MovieDetailController extends GetxController {
           'genres': arguments.genres,
         },
       );
-      List<Item> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _similarMovie.value = data;
     } catch (e) {
       return;

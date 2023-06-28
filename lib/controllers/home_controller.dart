@@ -2,8 +2,7 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/custom_banner_response_model.dart';
-import 'package:snplay/models/movie_response_model.dart';
-import 'package:snplay/models/series_response_model.dart';
+import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/view/entities/custom_banner_entity.dart';
 import 'package:snplay/view/entities/item_entity.dart';
 
@@ -54,7 +53,7 @@ class HomeController extends GetxController {
     try {
       _recentMovieStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/Movies");
-      List<Item> data = response.map((e) => MovieResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _recentMovie.value = data;
       _recentMovieStatus.value = Status.success;
     } catch (e) {
@@ -66,7 +65,7 @@ class HomeController extends GetxController {
     try {
       _recentSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/WebSeries");
-      List<Item> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _recentSeries.value = data;
       _recentSeriesStatus.value = Status.success;
     } catch (e) {

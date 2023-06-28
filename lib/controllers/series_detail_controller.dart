@@ -6,10 +6,10 @@ import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/episode_response_model.dart';
+import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/models/movie_subtitle_response_model.dart';
 import 'package:snplay/models/season_response_model.dart';
 import 'package:snplay/models/series_detail_response_model.dart';
-import 'package:snplay/models/series_response_model.dart';
 import 'package:snplay/models/tmdb_series_detail_response.dart';
 import 'package:snplay/view/entities/episode_entity.dart';
 import 'package:snplay/view/entities/item_detail_entity.dart';
@@ -242,7 +242,7 @@ class SeriesDetailController extends GetxController {
           'genres': arguments.genres,
         },
       );
-      List<Item> data = response.map((e) => SeriesResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _similarSeries.value = data;
     } catch (e) {
       return;
