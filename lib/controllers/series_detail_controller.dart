@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/login_controller.dart';
+import 'package:snplay/controllers/saved_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/episode_response_model.dart';
 import 'package:snplay/models/item_response_model.dart';
@@ -24,6 +25,7 @@ import 'package:snplay/view/widgets/custom_player_series_control_widget.dart';
 class SeriesDetailController extends GetxController {
   static SeriesDetailController instance = Get.find();
   final LoginController loginController = Get.put(LoginController());
+  final SavedController savedController = Get.put(SavedController());
   final apiService = ApiService();
   final Rx<Status> _detailStatus = Rx<Status>(Status.empty);
   final Rx<Status> _episodeStatus = Rx<Status>(Status.empty);
@@ -193,7 +195,7 @@ class SeriesDetailController extends GetxController {
     try {
       final str = jsonEncode(arguments.toJson());
       final bytes = utf8.encode(str);
-      final submit = base64.encode(bytes);
+      final submit = Uri.encodeFull(base64.encode(bytes)).replaceAll('=', '');
       String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/$submit/2');
       if (response != '') {
         _isFavourite.value = true;
@@ -208,19 +210,21 @@ class SeriesDetailController extends GetxController {
   addFavourite() async {
     final str = jsonEncode(arguments.toJson());
     final bytes = utf8.encode(str);
-    final submit = base64.encode(bytes);
+    final submit = base64.encode(bytes).replaceAll('=', '');
     await apiService.get('$baseURL/favourite/SET/${loginController.user.id}/$submit/2');
     _isFavourite.value = true;
     Get.snackbar('Berhasil', 'Series telah ditambahkan ke favorit');
+    savedController.getSaved();
   }
 
   removeFavourite() async {
     final str = jsonEncode(arguments.toJson());
     final bytes = utf8.encode(str);
-    final submit = base64.encode(bytes);
+    final submit = base64.encode(bytes).replaceAll('=', '');
     await apiService.get('$baseURL/favourite/REMOVE/${loginController.user.id}/$submit/2');
     _isFavourite.value = false;
     Get.snackbar('Berhasil', 'Series telah dihapus dari favorit');
+    savedController.getSaved();
   }
 
   Future<void> getSeriesDetail() async {

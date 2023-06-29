@@ -32,9 +32,9 @@ class GenreScreen extends StatelessWidget {
                     poster: genreController.result[index].poster ?? '-',
                     name: genreController.result[index].name ?? '-',
                     onTap: () {
-                      if (genreController.result[index].type == '1') {
+                      if (genreController.result[index].contentType == '1') {
                         Get.toNamed('movie', arguments: genreController.result[index]);
-                      } else if (genreController.result[index].type == '0') {
+                      } else if (genreController.result[index].contentType == '2') {
                         Get.toNamed('series', arguments: genreController.result[index]);
                       } else {
                         Get.snackbar('Ada Kesalahan', 'Data tidak diketahui');

@@ -7,8 +7,9 @@ class Item {
   String? genres;
   late String type;
   late String status;
+  late String contentType;
 
-  Item({this.id, this.tmdbId, this.poster, this.name, this.banner, this.genres, required this.type, required this.status});
+  Item({this.id, this.tmdbId, this.poster, this.name, this.banner, this.genres, required this.type, required this.status, required this.contentType});
 
   Item.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -18,6 +19,7 @@ class Item {
     poster = json['poster'];
     banner = json['banner'];
     type = json['type'] ?? '1';
+    contentType = json['content_type'] ?? '1';
     status = json['status'] ?? '1';
   }
 
@@ -30,6 +32,7 @@ class Item {
     data['poster'] = poster;
     data['banner'] = banner;
     data['type'] = type;
+    data['content_type'] = contentType;
     data['status'] = status;
     return data;
   }

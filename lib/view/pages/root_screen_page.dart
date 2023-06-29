@@ -6,6 +6,7 @@ import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/root_controller.dart';
 import 'package:snplay/view/pages/home_screen_page.dart';
 import 'package:snplay/view/pages/movie_screen_page.dart';
+import 'package:snplay/view/pages/saved_screen_page.dart';
 import 'package:snplay/view/pages/series_screen_page.dart';
 import 'package:snplay/view/widgets/drawer_menu_widget.dart';
 
@@ -13,8 +14,8 @@ class Root extends StatelessWidget {
   Root({super.key});
   final LoginController loginController = Get.put(LoginController());
   final RootController rootController = Get.put(RootController());
-  final List<String> appBarText = ["Beranda", "Film", "Series"];
-  final List<Widget> screen = [Home(), MovieScreen(), SeriesScreen()];
+  final List<String> appBarText = ["Beranda", "Film", "Series", "Tersimpan"];
+  final List<Widget> screen = [Home(), MovieScreen(), SeriesScreen(), Saved()];
 
   @override
   Widget build(BuildContext context) {
