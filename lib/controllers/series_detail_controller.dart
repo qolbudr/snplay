@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -189,7 +191,10 @@ class SeriesDetailController extends GetxController {
 
   Future<void> checkFavourite() async {
     try {
-      String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/${arguments.id}/2');
+      final str = jsonEncode(arguments.toJson());
+      final bytes = utf8.encode(str);
+      final submit = base64.encode(bytes);
+      String response = await apiService.get('$baseURL/favourite/SEARCH/${loginController.user.id}/$submit/2');
       if (response != '') {
         _isFavourite.value = true;
       } else {
@@ -201,13 +206,19 @@ class SeriesDetailController extends GetxController {
   }
 
   addFavourite() async {
-    await apiService.get('$baseURL/favourite/SET/${loginController.user.id}/${arguments.id}/2');
+    final str = jsonEncode(arguments.toJson());
+    final bytes = utf8.encode(str);
+    final submit = base64.encode(bytes);
+    await apiService.get('$baseURL/favourite/SET/${loginController.user.id}/$submit/2');
     _isFavourite.value = true;
     Get.snackbar('Berhasil', 'Series telah ditambahkan ke favorit');
   }
 
   removeFavourite() async {
-    await apiService.get('$baseURL/favourite/REMOVE/${loginController.user.id}/${arguments.id}/2');
+    final str = jsonEncode(arguments.toJson());
+    final bytes = utf8.encode(str);
+    final submit = base64.encode(bytes);
+    await apiService.get('$baseURL/favourite/REMOVE/${loginController.user.id}/$submit/2');
     _isFavourite.value = false;
     Get.snackbar('Berhasil', 'Series telah dihapus dari favorit');
   }
