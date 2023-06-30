@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/login/selection', page: () => const LoginSelection(), transition: Transition.cupertino),
         GetPage(name: '/login', page: () => Login(), transition: Transition.cupertino),
         GetPage(name: '/root', page: () => Root(), transition: Transition.cupertino),
-        GetPage(name: '/movie', page: () => MovieDetailScreen(), transition: Transition.cupertino),
+        GetPage(name: '/movie', page: () => const MovieDetailScreen(), transition: Transition.cupertino),
         GetPage(name: '/series', page: () => SeriesDetailScreen(), transition: Transition.cupertino),
         GetPage(name: '/player', page: () => Player(), transition: Transition.cupertino),
         GetPage(name: '/player/series', page: () => const PlayerSeries(), transition: Transition.cupertino),

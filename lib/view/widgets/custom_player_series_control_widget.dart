@@ -109,7 +109,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
   }
 
   void _hideControl() {
-    _timer = Timer(const Duration(seconds: 1), () {
+    _timer = Timer(const Duration(seconds: 3), () {
       if (mounted) {
         setState(() {
           _isControlShow = false;

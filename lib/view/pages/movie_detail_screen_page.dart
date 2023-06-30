@@ -8,11 +8,55 @@ import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
 import 'package:snplay/view/widgets/section_title_widget.dart';
 
-class MovieDetailScreen extends StatelessWidget {
-  MovieDetailScreen({super.key});
+class MovieDetailScreen extends StatefulWidget {
+  const MovieDetailScreen({super.key});
+
+  @override
+  State<MovieDetailScreen> createState() => _MovieDetailScreenState();
+}
+
+class _MovieDetailScreenState extends State<MovieDetailScreen> {
   final Item movie = Get.arguments;
   final MovieDetailController movieDetailController = Get.put(MovieDetailController());
   final MovieController movieController = Get.put(MovieController());
+
+  Future<void> _showDownloadModal() async {
+    showModalBottomSheet<void>(
+      constraints: const BoxConstraints(
+        maxWidth: 500,
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            const ListTile(
+              title: Text("Pilih Unduhan"),
+              subtitle: Text('Silahkan pilih link unduhan yang tersedia'),
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView(
+                children: List.generate(
+                  movieDetailController.downloadLink.length,
+                  (index) => ListTile(
+                    title: Text(
+                      '${movieDetailController.downloadLink[index].name} - ${movieDetailController.downloadLink[index].quality ?? '-'}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    onTap: () {
+                      movieDetailController.download(movieDetailController.downloadLink[index]);
+                      Get.snackbar("Berhasil", "Unduhan telah dimulai");
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,8 +194,14 @@ class MovieDetailScreen extends StatelessWidget {
                                         ),
                                         IconButton(
                                           splashRadius: 20,
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.download_outlined),
+                                          onPressed: () {
+                                            if (movieDetailController.downloadLink.isEmpty) {
+                                              Get.snackbar("Ada Kesalahan", "Unduhan tidak tersedia");
+                                            } else {
+                                              _showDownloadModal();
+                                            }
+                                          },
+                                          icon: movieDetailController.isDownloaded ? const Icon(Icons.check, color: primaryColor) : const Icon(Icons.download_outlined),
                                         )
                                       ],
                                     )

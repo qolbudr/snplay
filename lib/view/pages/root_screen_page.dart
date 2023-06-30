@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/root_controller.dart';
+import 'package:snplay/view/pages/download_screen_page.dart';
 import 'package:snplay/view/pages/home_screen_page.dart';
 import 'package:snplay/view/pages/movie_screen_page.dart';
 import 'package:snplay/view/pages/saved_screen_page.dart';
@@ -14,8 +15,8 @@ class Root extends StatelessWidget {
   Root({super.key});
   final LoginController loginController = Get.put(LoginController());
   final RootController rootController = Get.put(RootController());
-  final List<String> appBarText = ["Beranda", "Film", "Series", "Tersimpan"];
-  final List<Widget> screen = [Home(), MovieScreen(), SeriesScreen(), Saved()];
+  final List<String> appBarText = ["Beranda", "Film", "Series", "Tersimpan", "Unduhan"];
+  final List<Widget> screen = [Home(), MovieScreen(), SeriesScreen(), Saved(), DownloadScreen()];
 
   @override
   Widget build(BuildContext context) {

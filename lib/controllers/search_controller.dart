@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
-import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/genre_response_model.dart';
 import 'package:snplay/models/item_response_model.dart';
@@ -16,7 +15,6 @@ class SearchController extends GetxController {
   final Rx<Status> _status = Rx<Status>(Status.empty);
   final Rx<Status> _searchStatus = Rx<Status>(Status.empty);
   final Rx<List<Item>> _result = Rx<List<Item>>([]);
-  final LoginController _loginController = Get.put(LoginController());
   final Rx<bool> _isSearch = Rx<bool>(false);
   Timer? _debounce;
 

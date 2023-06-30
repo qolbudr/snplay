@@ -5,14 +5,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/download_controller.dart';
 import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/saved_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
+import 'package:snplay/models/download_link_response_model.dart';
 import 'package:snplay/models/movie_detail_response_model.dart';
 import 'package:snplay/models/movie_playlink_response_model.dart';
 import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/models/movie_subtitle_response_model.dart';
 import 'package:snplay/models/tmdb_movie_detail_response_model.dart';
+import 'package:snplay/view/entities/download_link_entity.dart';
 import 'package:snplay/view/entities/item_detail_entity.dart';
 import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/entities/movie_playlink_entity.dart';
@@ -24,6 +27,7 @@ class MovieDetailController extends GetxController {
   static MovieDetailController instance = Get.find();
   final LoginController loginController = Get.put(LoginController());
   final SavedController savedController = Get.put(SavedController());
+  final DownloadController downloadController = Get.put(DownloadController());
   final apiService = ApiService();
   final Rx<Status> _detailStatus = Rx<Status>(Status.empty);
   final Rx<ItemDetail> _movieDetail = Rx<ItemDetail>(ItemDetail());
@@ -31,8 +35,11 @@ class MovieDetailController extends GetxController {
   final Rx<List<Item>> _similarMovie = Rx<List<Item>>([]);
   final Rx<bool> _isFavourite = Rx<bool>(false);
   final Rx<List<MoviePlaylink>> _moviePlaylink = Rx<List<MoviePlaylink>>([]);
+  final Rx<List<DownloadLink>> _downloadLink = Rx<List<DownloadLink>>([]);
   final List<List<MovieSubtitle>> _subs = [];
   final Map<String, String> _resolution = {};
+  final Rx<bool> _isDownloaded = Rx<bool>(false);
+  final Rx<String?> _localPath = Rx<String?>(null);
 
   Status get detailStatus => _detailStatus.value;
   ItemDetail get movieDetail => _movieDetail.value;
@@ -40,6 +47,8 @@ class MovieDetailController extends GetxController {
   TmdbMovieDetail get tmdbMovieDetail => _tmdbMovieDetail.value;
   final Item arguments = Get.arguments;
   bool get isFavourite => _isFavourite.value;
+  List<DownloadLink> get downloadLink => _downloadLink.value;
+  bool get isDownloaded => _isDownloaded.value;
 
   @override
   void onInit() {
@@ -48,13 +57,25 @@ class MovieDetailController extends GetxController {
   }
 
   initFunction() {
-    Future.wait([getTmdbMovieDetail(), getMovieDetail(), getSimilarMovie(), checkFavourite(), getMoviePlayLink()]).then((value) {
+    Future.wait([getTmdbMovieDetail(), getMovieDetail(), getSimilarMovie(), checkFavourite(), getMoviePlayLink(), getDownloadLink(), checkDownload()]).then((value) {
       _detailStatus.value = Status.success;
     }).catchError((e) {
       _detailStatus.value = Status.error;
       Get.snackbar('Ada Kesalahan', getError(e));
     });
     addViewLog();
+  }
+
+  Future<void> checkDownload() async {
+    int index = downloadController.task.indexWhere((element) => element.item.id == arguments.id && element.item.type == arguments.type);
+    if (index != -1) {
+      _isDownloaded.value = true;
+      _localPath.value = downloadController.task[index].path;
+    }
+  }
+
+  void download(DownloadLink item) {
+    downloadController.addDownloadTask(arguments, item);
   }
 
   Future<void> addViewLog() async {
@@ -121,8 +142,8 @@ class MovieDetailController extends GetxController {
           ),
         ),
         betterPlayerDataSource: BetterPlayerDataSource(
-          BetterPlayerDataSourceType.network,
-          _moviePlaylink.value.first.url ?? 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          _localPath.value == null ? BetterPlayerDataSourceType.network : BetterPlayerDataSourceType.file,
+          _localPath.value == null ? _moviePlaylink.value.first.url ?? 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' : _localPath.value!,
           placeholder: CachedNetworkImage(imageUrl: arguments.poster ?? '-'),
           cacheConfiguration: const BetterPlayerCacheConfiguration(useCache: true),
           resolutions: _resolution,
@@ -141,6 +162,16 @@ class MovieDetailController extends GetxController {
       Get.toNamed('/player', arguments: controller);
     } catch (e) {
       Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi player');
+    }
+  }
+
+  Future<void> getDownloadLink() async {
+    try {
+      List<dynamic> response = await apiService.get('$baseURL/getMovieDownloadLinks/${arguments.id}');
+      List<DownloadLink> data = response.map((e) => DownloadLinkResponseModel.fromJson(e).toEntity()).toList();
+      _downloadLink.value = data;
+    } catch (e) {
+      return;
     }
   }
 
