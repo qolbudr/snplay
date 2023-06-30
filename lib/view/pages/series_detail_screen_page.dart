@@ -2,15 +2,61 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/download_controller.dart';
 import 'package:snplay/controllers/series_detail_controller.dart';
 import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
 import 'package:snplay/view/widgets/section_title_widget.dart';
 
-class SeriesDetailScreen extends StatelessWidget {
-  SeriesDetailScreen({super.key});
+class SeriesDetailScreen extends StatefulWidget {
+  const SeriesDetailScreen({super.key});
+
+  @override
+  State<SeriesDetailScreen> createState() => _SeriesDetailScreenState();
+}
+
+class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
   final Item series = Get.arguments;
   final SeriesDetailController seriesDetailController = Get.put(SeriesDetailController());
+  final DownloadController downloadController = Get.put(DownloadController());
+
+  Future<void> _showDownloadModal(String episodeId) async {
+    showModalBottomSheet<void>(
+      constraints: const BoxConstraints(
+        maxWidth: 500,
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            const ListTile(
+              title: Text("Pilih Unduhan"),
+              subtitle: Text('Silahkan pilih link unduhan yang tersedia'),
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView(
+                children: List.generate(
+                  seriesDetailController.downloadLink.length,
+                  (index) => ListTile(
+                    title: Text(
+                      '${seriesDetailController.downloadLink[index].name} - ${seriesDetailController.downloadLink[index].quality ?? '-'}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    onTap: () {
+                      seriesDetailController.download(seriesDetailController.downloadLink[index], episodeId);
+                      Get.snackbar("Berhasil", "Unduhan telah dimulai");
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -306,10 +352,32 @@ class SeriesDetailScreen extends StatelessWidget {
                                               ),
                                               const SizedBox(width: 5),
                                               IconButton(
-                                                onPressed: () {},
-                                                icon: const Icon(
-                                                  Icons.download_outlined,
-                                                ),
+                                                onPressed: downloadController.task.indexWhere(
+                                                            (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}') ==
+                                                        -1
+                                                    ? () {
+                                                        Get.snackbar('Loading', 'Memuat informasi download');
+                                                        seriesDetailController.getEpisodeDownloadLink(seriesDetailController.episode[index].id!).then((value) {
+                                                          _showDownloadModal('/${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
+                                                        }).catchError((e) {
+                                                          Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi download');
+                                                        });
+                                                      }
+                                                    : null,
+                                                icon: Builder(builder: (context) {
+                                                  int isDownload = downloadController.task.indexWhere(
+                                                      (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
+                                                  if (isDownload == -1) {
+                                                    return const Icon(
+                                                      Icons.download_outlined,
+                                                    );
+                                                  } else {
+                                                    return const Icon(
+                                                      Icons.check,
+                                                      color: primaryColor,
+                                                    );
+                                                  }
+                                                }),
                                               )
                                             ],
                                           ),

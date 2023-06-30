@@ -194,13 +194,15 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                         ),
                                         IconButton(
                                           splashRadius: 20,
-                                          onPressed: () {
-                                            if (movieDetailController.downloadLink.isEmpty) {
-                                              Get.snackbar("Ada Kesalahan", "Unduhan tidak tersedia");
-                                            } else {
-                                              _showDownloadModal();
-                                            }
-                                          },
+                                          onPressed: movieDetailController.isDownloaded
+                                              ? null
+                                              : () {
+                                                  if (movieDetailController.downloadLink.isEmpty) {
+                                                    Get.snackbar("Ada Kesalahan", "Unduhan tidak tersedia");
+                                                  } else {
+                                                    _showDownloadModal();
+                                                  }
+                                                },
                                           icon: movieDetailController.isDownloaded ? const Icon(Icons.check, color: primaryColor) : const Icon(Icons.download_outlined),
                                         )
                                       ],

@@ -15,6 +15,17 @@ class DownloadController extends GetxController {
   StreamSubscription<TaskUpdate>? _stream;
   List<DownloadTaskEntity> get task => _task.value;
 
+  List<DownloadTaskEntity> get removeDupliTask {
+    List<DownloadTaskEntity> temp = [];
+    for (var element in task) {
+      String parsedId = element.taskId.split('/').first;
+      if (temp.indexWhere((item) => item.taskId.contains(parsedId)) == -1) {
+        temp.add(element);
+      }
+    }
+    return temp;
+  }
+
   @override
   void onInit() {
     _stream = FileDownloader().updates.listen((update) async {
@@ -27,8 +38,16 @@ class DownloadController extends GetxController {
         }
       } else if (update is TaskProgressUpdate) {
         int index = _task.value.indexWhere((element) => element.taskId == update.task.taskId);
+        int newIndex;
+        if (_task.value[index].episode != null) {
+          String parsedId = _task.value[index].taskId.split('/').first;
+          newIndex = _task.value.indexWhere((element) => element.taskId.contains(parsedId));
+        } else {
+          newIndex = index;
+        }
+
         if (index != -1) {
-          _task.value[index].updateProgress(update.progress);
+          _task.value[newIndex].updateProgress(update.progress);
 
           if (update.progress == 1) {
             String path = await update.task.filePath();
@@ -55,10 +74,19 @@ class DownloadController extends GetxController {
     _task.value = await dbService.getDownload();
   }
 
-  void addDownloadTask(Item item, DownloadLink downloadLink) {
+  void addDownloadTask(Item item, DownloadLink downloadLink, {String? episode}) {
     String filename = downloadLink.url!.split('/').last;
-    DownloadTaskEntity model = DownloadTaskEntity(taskId: filename, url: downloadLink.url!, item: item, progress: 0, status: 0, filename: filename);
-    if (_task.value.where((element) => element.item.id! == item.id).isEmpty) {
+    DownloadTaskEntity model;
+    if (episode == null) {
+      model = DownloadTaskEntity(taskId: '${item.name}-${item.id}', url: downloadLink.url!, item: item, progress: 0, status: 0, filename: filename, episode: episode);
+    } else {
+      model = DownloadTaskEntity(taskId: '${item.name}-${item.id}$episode', url: downloadLink.url!, item: item, progress: 0, status: 0, filename: filename, episode: episode);
+    }
+    if (_task.value.where((element) => element.taskId == model.taskId).isEmpty && episode == null) {
+      final task = DownloadTask(taskId: model.taskId, url: downloadLink.url!, filename: filename, allowPause: true, updates: Updates.statusAndProgress);
+      _task.value.add(model);
+      download(task);
+    } else if (episode != null) {
       final task = DownloadTask(taskId: model.taskId, url: downloadLink.url!, filename: filename, allowPause: true, updates: Updates.statusAndProgress);
       _task.value.add(model);
       download(task);
@@ -68,7 +96,8 @@ class DownloadController extends GetxController {
   }
 
   void deleteTask(int index) {
-    _task.value.removeAt(index);
+    String taskId = _task.value[index].taskId;
+    _task.value.removeWhere((item) => item.taskId == taskId);
     dbService.updateDownloadList(_task.value);
     updater.value += 1;
   }

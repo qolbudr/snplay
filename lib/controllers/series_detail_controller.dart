@@ -5,15 +5,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/download_controller.dart';
 import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/saved_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
+import 'package:snplay/models/download_link_response_model.dart';
 import 'package:snplay/models/episode_response_model.dart';
 import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/models/movie_subtitle_response_model.dart';
 import 'package:snplay/models/season_response_model.dart';
 import 'package:snplay/models/series_detail_response_model.dart';
 import 'package:snplay/models/tmdb_series_detail_response.dart';
+import 'package:snplay/view/entities/download_link_entity.dart';
 import 'package:snplay/view/entities/episode_entity.dart';
 import 'package:snplay/view/entities/item_detail_entity.dart';
 import 'package:snplay/view/entities/item_entity.dart';
@@ -26,6 +29,7 @@ class SeriesDetailController extends GetxController {
   static SeriesDetailController instance = Get.find();
   final LoginController loginController = Get.put(LoginController());
   final SavedController savedController = Get.put(SavedController());
+  final DownloadController downloadController = Get.put(DownloadController());
   final apiService = ApiService();
   final Rx<Status> _detailStatus = Rx<Status>(Status.empty);
   final Rx<Status> _episodeStatus = Rx<Status>(Status.empty);
@@ -37,6 +41,7 @@ class SeriesDetailController extends GetxController {
   final Rx<String?> _selectedSeason = Rx<String?>(null);
   final Rx<List<Episode>> _episode = Rx<List<Episode>>([]);
   final Map<String, List<MovieSubtitle>> _subs = {};
+  final Rx<List<DownloadLink>> _downloadLink = Rx<List<DownloadLink>>([]);
 
   Status get detailStatus => _detailStatus.value;
   Status get episodeStatus => _episodeStatus.value;
@@ -47,6 +52,7 @@ class SeriesDetailController extends GetxController {
   bool get isFavourite => _isFavourite.value;
   List<Season> get season => _season.value;
   List<Episode> get episode => _episode.value;
+  List<DownloadLink> get downloadLink => _downloadLink.value;
   String? get selectedSeason => _selectedSeason.value;
 
   set changeSeason(String? id) {
@@ -150,23 +156,36 @@ class SeriesDetailController extends GetxController {
             ),
           ),
         ),
-        betterPlayerDataSourceList: episode
-            .where((item) => item.url != '' && item.url != null)
-            .map(
-              (e) => BetterPlayerDataSource(BetterPlayerDataSourceType.network, e.url!,
-                  placeholder: CachedNetworkImage(
-                    imageUrl: e.episoadeImage!,
-                  ),
-                  subtitles: _subs[e.id]
-                      ?.map((sub) => BetterPlayerSubtitlesSource(
-                            type: BetterPlayerSubtitlesSourceType.network,
-                            name: sub.language,
-                            selectedByDefault: true,
-                            urls: [sub.subtitleUrl],
-                          ))
-                      .toList()),
-            )
-            .toList(),
+        betterPlayerDataSourceList: episode.where((item) => item.url != '' && item.url != null).map((e) {
+          int indeks = downloadController.task.indexWhere((element) => element.taskId.split('/').last == '$selectedSeason-${e.id}');
+          if (indeks == -1) {
+            return BetterPlayerDataSource(BetterPlayerDataSourceType.network, e.url!,
+                placeholder: CachedNetworkImage(
+                  imageUrl: e.episoadeImage!,
+                ),
+                subtitles: _subs[e.id]
+                    ?.map((sub) => BetterPlayerSubtitlesSource(
+                          type: BetterPlayerSubtitlesSourceType.network,
+                          name: sub.language,
+                          selectedByDefault: true,
+                          urls: [sub.subtitleUrl],
+                        ))
+                    .toList());
+          } else {
+            return BetterPlayerDataSource(BetterPlayerDataSourceType.file, downloadController.task[indeks].path!,
+                placeholder: CachedNetworkImage(
+                  imageUrl: e.episoadeImage!,
+                ),
+                subtitles: _subs[e.id]
+                    ?.map((sub) => BetterPlayerSubtitlesSource(
+                          type: BetterPlayerSubtitlesSourceType.network,
+                          name: sub.language,
+                          selectedByDefault: true,
+                          urls: [sub.subtitleUrl],
+                        ))
+                    .toList());
+          }
+        }).toList(),
         betterPlayerPlaylistConfiguration: BetterPlayerPlaylistConfiguration(
           loopVideos: false,
           initialStartIndex: index,
@@ -189,6 +208,20 @@ class SeriesDetailController extends GetxController {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> getEpisodeDownloadLink(String episodeId) async {
+    try {
+      List<dynamic> response = await apiService.get('$baseURL/getEpisodeDownloadLinks/$episodeId');
+      List<DownloadLink> data = response.map((e) => DownloadLinkResponseModel.fromJson(e).toEntity()).toList();
+      _downloadLink.value = data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  void download(DownloadLink item, String episodeId) {
+    downloadController.addDownloadTask(arguments, item, episode: episodeId);
   }
 
   Future<void> checkFavourite() async {

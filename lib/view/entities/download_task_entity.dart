@@ -46,5 +46,5 @@ class DownloadTaskEntity {
     return data;
   }
 
-  DownloadTaskEntity({required this.item, required this.url, required this.progress, this.path, required this.status, required this.filename, required this.taskId});
+  DownloadTaskEntity({required this.item, required this.url, required this.progress, this.path, required this.status, required this.filename, required this.taskId, this.episode});
 }

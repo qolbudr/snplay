@@ -20,27 +20,27 @@ class DownloadScreen extends StatelessWidget {
           ),
           Expanded(
             child: ListView.separated(
-              separatorBuilder: (context, index) => const Divider(
-                color: secondaryColor,
-                height: 50,
+              separatorBuilder: (context, index) => Divider(
+                color: Colors.white.withOpacity(0.5),
+                height: 30,
               ),
-              itemCount: downloadController.task.length,
+              itemCount: downloadController.removeDupliTask.length,
               itemBuilder: (context, index) => Stack(
                 children: [
                   ListTile(
                     onTap: () {
-                      if (downloadController.task[index].item.contentType == '1') {
-                        Get.toNamed('/movie', arguments: downloadController.task[index].item);
+                      if (downloadController.removeDupliTask[index].item.contentType == '1') {
+                        Get.toNamed('/movie', arguments: downloadController.removeDupliTask[index].item);
                       } else {
-                        Get.toNamed('/series', arguments: downloadController.task[index].item);
+                        Get.toNamed('/series', arguments: downloadController.removeDupliTask[index].item);
                       }
                     },
                     leading: CachedNetworkImage(
-                      imageUrl: downloadController.task[index].item.poster ?? '-',
+                      imageUrl: downloadController.removeDupliTask[index].item.poster ?? '-',
                       width: 40,
                     ),
-                    title: Text(downloadController.task[index].item.name ?? '-'),
-                    subtitle: Text(downloadController.task[index].item.genres ?? '-'),
+                    title: Text(downloadController.removeDupliTask[index].item.name ?? '-'),
+                    subtitle: Text(downloadController.removeDupliTask[index].item.genres ?? '-'),
                     trailing: IconButton(
                       icon: const Icon(
                         Icons.delete,
@@ -49,13 +49,13 @@ class DownloadScreen extends StatelessWidget {
                       onPressed: () => downloadController.deleteTask(index),
                     ),
                   ),
-                  if (downloadController.task[index].progress < 1)
+                  if (downloadController.removeDupliTask[index].progress < 1)
                     Positioned(
                       bottom: -3,
                       left: 15,
                       right: 15,
                       child: LinearProgressIndicator(
-                        value: downloadController.task[index].progress,
+                        value: downloadController.removeDupliTask[index].progress,
                         color: primaryColor,
                       ),
                     )
