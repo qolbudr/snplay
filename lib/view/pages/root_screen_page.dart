@@ -79,7 +79,7 @@ class Root extends StatelessWidget {
                               const Text("Nikmati layanan premium lainnya"),
                             ],
                           ),
-                          Icon(Icons.arrow_upward)
+                          const Icon(Icons.arrow_upward)
                         ],
                       ),
                     ),

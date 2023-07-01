@@ -173,7 +173,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                           children: const [
                                             Icon(Icons.play_arrow, size: 30),
                                             SizedBox(width: 5),
-                                            Text("Mainkan"),
+                                            Text("Play"),
                                           ],
                                         ),
                                       ),
