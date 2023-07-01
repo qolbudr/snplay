@@ -1,8 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/view/pages/auth/login_page.dart';
 import 'package:snplay/view/pages/auth/login_selection_page.dart';
+import 'package:snplay/view/pages/auth/register_page.dart';
+import 'package:snplay/view/pages/auth/register_selection_page.dart';
 import 'package:snplay/view/pages/genre_screen_page.dart';
 import 'package:snplay/view/pages/movie_detail_screen_page.dart';
 import 'package:snplay/view/pages/player_screen_page.dart';
@@ -13,7 +16,9 @@ import 'package:snplay/view/pages/series_detail_screen_page.dart';
 import 'package:snplay/view/pages/splash_screen_page.dart';
 import 'package:snplay/view/pages/welcome_screen_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -51,8 +56,10 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => SplashScreen()),
         GetPage(name: '/welcome', page: () => const WelcomeScreen(), transition: Transition.cupertino),
-        GetPage(name: '/login/selection', page: () => const LoginSelection(), transition: Transition.cupertino),
+        GetPage(name: '/login/selection', page: () => LoginSelection(), transition: Transition.cupertino),
+        GetPage(name: '/register/selection', page: () => RegisterSelection(), transition: Transition.cupertino),
         GetPage(name: '/login', page: () => Login(), transition: Transition.cupertino),
+        GetPage(name: '/register', page: () => Register(), transition: Transition.cupertino),
         GetPage(name: '/root', page: () => Root(), transition: Transition.cupertino),
         GetPage(name: '/movie', page: () => const MovieDetailScreen(), transition: Transition.cupertino),
         GetPage(name: '/series', page: () => const SeriesDetailScreen(), transition: Transition.cupertino),

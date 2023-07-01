@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.snplay">
+    package="com.snplay.app">
    <application
         android:label="snplay"
         android:name="${applicationName}"

@@ -11,7 +11,7 @@ class ItemCardLoading extends StatelessWidget {
       child: Shimmer.fromColors(
         baseColor: Colors.white.withOpacity(0.05),
         highlightColor: Colors.white.withOpacity(0.2),
-        child: Container(color: Colors.white),
+        child: Container(color: Colors.black),
       ),
     );
   }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
-import 'package:snplay/controllers/login_controller.dart';
+import 'package:snplay/controllers/register_controller.dart';
 
-class LoginSelection extends StatelessWidget {
-  LoginSelection({super.key});
-  final LoginController loginController = Get.put(LoginController());
+class RegisterSelection extends StatelessWidget {
+  RegisterSelection({super.key});
+  final RegisterController registerController = Get.put(RegisterController());
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class LoginSelection extends StatelessWidget {
                 style: defaultButtonStyle.copyWith(
                   backgroundColor: MaterialStateProperty.all(Colors.white),
                 ),
-                onPressed: () => loginController.loginWithGoogle(),
+                onPressed: () => registerController.registerWithGoogle(),
                 child: Row(
                   children: [
                     Image.asset('assets/images/logo-google.png', width: 28),
@@ -46,7 +46,7 @@ class LoginSelection extends StatelessWidget {
               const SizedBox(height: 10),
               ElevatedButton(
                 style: defaultButtonStyle,
-                onPressed: () => Get.toNamed('/login'),
+                onPressed: () => Get.toNamed('/register'),
                 child: Row(
                   children: const [
                     Icon(Icons.email_outlined),

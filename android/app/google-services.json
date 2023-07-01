@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "758046473199",
+    "project_id": "snplay-ea9ed",
+    "storage_bucket": "snplay-ea9ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758046473199:android:3ebf5ac00938a54813941a",
+        "android_client_info": {
+          "package_name": "com.snplay.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758046473199-97nf24l4dv2j07ohn1qq0u9tdqpv205m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoDPq9jp94yyusG23sQ8ovKRNij4-fwMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758046473199-97nf24l4dv2j07ohn1qq0u9tdqpv205m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

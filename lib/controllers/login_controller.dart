@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/controllers/services/db_service.dart';
@@ -17,6 +19,8 @@ class LoginController extends GetxController {
   final apiService = ApiService();
   final dbService = DBService();
   final Rx<Status> _status = Rx<Status>(Status.empty);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   bool get showPassword => _showPassword.value;
   bool get buttonEnabled => _buttonEnabled.value;
@@ -49,6 +53,59 @@ class LoginController extends GetxController {
     }
   }
 
+  loginWithGoogle() async {
+    GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+    if (googleSignInAccount != null) {
+      GoogleSignInAuthentication? googleSignInAuthentication = await googleSignInAccount.authentication;
+      AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      UserCredential authResult = await _auth.signInWithCredential(credential);
+      User? user = authResult.user;
+
+      if (user != null) {
+        try {
+          onChange('email', user.email);
+          onChange('password', 'googleSignIn');
+          await login();
+        } catch (e) {
+          onChange('email', user.email);
+          onChange('password', 'googleSignIn');
+          onChange('username', user.displayName);
+          try {
+            String payload = "signup:${postData['username']}:${postData['email']}:${md5.convert(utf8.encode(postData['password']))}";
+            _status.value = Status.loading;
+            Map<String, dynamic> response = await apiService.post(
+              '$baseURL/authentication',
+              {
+                'encoded': base64Encode(utf8.encode(payload)),
+              },
+            );
+            LoginResponseModel model = LoginResponseModel.fromJson(response);
+            if (model.status == 'Email Already Regestered') {
+              throw Exception('Email Already Regestered');
+            } else {
+              dbService.setUser(model);
+              UserData data = model.toEntity();
+              setUser = data;
+              _status.value = Status.success;
+              Get.offAllNamed('/root');
+            }
+          } catch (e) {
+            _status.value = Status.error;
+            Get.snackbar('Ada Kesalahan', getError(e));
+          }
+        }
+      } else {
+        Get.snackbar('Ada Kesalahan', 'User tidak ditemukan');
+      }
+    } else {
+      Get.snackbar('Ada Kesalahan', 'User tidak ditemukan');
+    }
+  }
+
   login() async {
     try {
       String payload = "login:${postData['email']}:${md5.convert(utf8.encode(postData['password']))}";
@@ -71,7 +128,12 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       _status.value = Status.error;
-      Get.snackbar('Terjadi Kesalahan', getError(e));
+      rethrow;
     }
+  }
+
+  logout() async {
+    dbService.deleteUser();
+    Get.offAllNamed('/welcome');
   }
 }

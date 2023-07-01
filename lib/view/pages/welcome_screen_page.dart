@@ -27,7 +27,7 @@ class WelcomeScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: defaultButtonStyle,
-                  onPressed: () {},
+                  onPressed: () => Get.toNamed('/register/selection'),
                   child: const Text("Daftar"),
                 ),
               ),

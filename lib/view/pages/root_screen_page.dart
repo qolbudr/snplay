@@ -84,6 +84,12 @@ class Root extends StatelessWidget {
                       icon: Icons.downloading_outlined,
                       isActive: rootController.selectedIndex == 4,
                     ),
+                    DrawerMenu(
+                      onTap: () => loginController.logout(),
+                      name: "Logout",
+                      icon: Icons.logout,
+                      isActive: false,
+                    ),
                   ],
                 ),
               ),

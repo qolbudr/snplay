@@ -37,6 +37,11 @@ class DBService {
     }
   }
 
+  Future<void> deleteUser() async {
+    final db = await database;
+    db.remove('user');
+  }
+
   Future<void> updateDownloadList(List<DownloadTaskEntity> task) async {
     final db = await database;
     String? check = db.getString('download');

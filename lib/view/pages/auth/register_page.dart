@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
-import 'package:snplay/controllers/login_controller.dart';
+import 'package:snplay/controllers/register_controller.dart';
 
-class Login extends StatelessWidget {
-  Login({super.key});
-
-  final LoginController loginController = Get.put(LoginController());
+class Register extends StatelessWidget {
+  Register({super.key});
+  final RegisterController registerController = Get.put(RegisterController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login dengan Email"),
+        title: const Text("Register dengan Email"),
       ),
       body: SafeArea(
         child: Container(
@@ -37,7 +36,15 @@ class Login extends StatelessWidget {
                   child: Column(
                     children: [
                       TextFormField(
-                        onChanged: (value) => loginController.onChange('email', value),
+                        onChanged: (value) => registerController.onChange('username', value),
+                        decoration: const InputDecoration(
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: secondaryColor)),
+                          label: Text("Username"),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        onChanged: (value) => registerController.onChange('email', value),
                         decoration: const InputDecoration(
                           enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: secondaryColor)),
                           label: Text("Email"),
@@ -46,15 +53,15 @@ class Login extends StatelessWidget {
                       const SizedBox(height: 10),
                       Obx(
                         () => TextFormField(
-                          onChanged: (value) => loginController.onChange('password', value),
-                          obscureText: !loginController.showPassword,
+                          onChanged: (value) => registerController.onChange('password', value),
+                          obscureText: !registerController.showPassword,
                           decoration: InputDecoration(
                             enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: secondaryColor)),
                             label: const Text("Kata Sandi"),
                             suffixIcon: IconButton(
-                              onPressed: () => loginController.tooglePassword(),
+                              onPressed: () => registerController.tooglePassword(),
                               icon: Icon(
-                                loginController.showPassword ? Icons.visibility_off : Icons.visibility,
+                                registerController.showPassword ? Icons.visibility_off : Icons.visibility,
                                 color: Colors.grey,
                               ),
                             ),
@@ -67,18 +74,18 @@ class Login extends StatelessWidget {
                           width: double.infinity,
                           child: ElevatedButton(
                             style: defaultButtonStyle,
-                            onPressed: loginController.status == Status.loading
+                            onPressed: registerController.status == Status.loading
                                 ? null
-                                : loginController.buttonEnabled
+                                : registerController.buttonEnabled
                                     ? () async {
                                         try {
-                                          await loginController.login();
+                                          await registerController.register();
                                         } catch (e) {
                                           Get.snackbar('Ada Kesalahan', getError(e));
                                         }
                                       }
                                     : null,
-                            child: loginController.status == Status.loading
+                            child: registerController.status == Status.loading
                                 ? Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
@@ -93,7 +100,7 @@ class Login extends StatelessWidget {
                                       Text("Tunggu Sebentar"),
                                     ],
                                   )
-                                : const Text("Masuk"),
+                                : const Text("Daftar"),
                           ),
                         ),
                       )
