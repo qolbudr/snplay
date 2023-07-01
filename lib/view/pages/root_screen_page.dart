@@ -54,6 +54,35 @@ class Root extends StatelessWidget {
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xfffc4a1a).withOpacity(0.8),
+                            const Color(0xfff7b733).withOpacity(0.8),
+                          ],
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Upgrade Langganan",
+                                style: h4.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 5),
+                              const Text("Nikmati layanan premium lainnya"),
+                            ],
+                          ),
+                          Icon(Icons.arrow_upward)
+                        ],
+                      ),
+                    ),
                     DrawerMenu(
                       onTap: () => rootController.setSelectedIndex = 0,
                       name: "Beranda",
