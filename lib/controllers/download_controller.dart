@@ -15,6 +15,8 @@ class DownloadController extends GetxController {
   StreamSubscription<TaskUpdate>? _stream;
   List<DownloadTaskEntity> get task => _task.value;
 
+  StreamSubscription<TaskUpdate>? get stream => _stream;
+
   List<DownloadTaskEntity> get removeDupliTask {
     List<DownloadTaskEntity> temp = [];
     for (var element in task) {

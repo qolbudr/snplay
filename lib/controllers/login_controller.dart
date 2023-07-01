@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/download_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/controllers/services/db_service.dart';
 import 'package:snplay/models/login_response_model.dart';
@@ -11,6 +12,7 @@ import 'package:snplay/view/entities/user_data_entity.dart';
 
 class LoginController extends GetxController {
   static LoginController instance = Get.find();
+  final DownloadController downloadController = Get.put(DownloadController());
   final Rx<bool> _showPassword = Rx<bool>(false);
   final Rx<bool> _buttonEnabled = Rx<bool>(false);
   final Rx<Map<String, dynamic>> _data = Rx<Map<String, dynamic>>({});
@@ -133,6 +135,7 @@ class LoginController extends GetxController {
   }
 
   logout() async {
+    downloadController.stream?.cancel();
     dbService.deleteUser();
     Get.offAllNamed('/welcome');
   }
