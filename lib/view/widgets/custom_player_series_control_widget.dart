@@ -75,7 +75,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
   }
 
   void _checkBuffer() {
-    _checkBufferTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _checkBufferTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (mounted) {
         setState(() {
           _isBuffer = ((widget.controller.isBuffering() ?? true));
@@ -92,7 +92,7 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
       } else {
         _resetTimer();
         _checkBufferTimer?.cancel();
-        Future.delayed(const Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 3), () {
           _checkBuffer();
         });
       }
@@ -155,103 +155,111 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: AnimatedOpacity(
-                    onEnd: () {
+                  child: GestureDetector(
+                    onTap: () {
                       setState(() {
-                        _isShowPL = false;
+                        _changeToShow = true;
+                        _isControlShow = false;
                       });
                     },
-                    duration: const Duration(milliseconds: 500),
-                    opacity: _isShowPlaylist ? 1 : 0,
-                    child: Container(
-                      color: secondaryColor,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(
-                                    () {
+                    child: AnimatedOpacity(
+                      onEnd: () {
+                        setState(() {
+                          _isShowPL = false;
+                        });
+                      },
+                      duration: const Duration(milliseconds: 500),
+                      opacity: _isShowPlaylist ? 1 : 0,
+                      child: Container(
+                        color: secondaryColor,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        _isShowPL = false;
+                                        _isShowPlaylist = false;
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.close),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Expanded(
+                              child: ListView.separated(
+                                separatorBuilder: (context, index) => const Divider(),
+                                itemCount: widget.playlistLength,
+                                itemBuilder: (context, index) => InkWell(
+                                  onTap: () {
+                                    widget.keyPlaylist.currentState?.betterPlayerPlaylistController?.setupDataSource(index);
+                                    setState(() {
                                       _isShowPL = false;
                                       _isShowPlaylist = false;
-                                    },
-                                  );
-                                },
-                                icon: const Icon(Icons.close),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Expanded(
-                            child: ListView.separated(
-                              separatorBuilder: (context, index) => const Divider(),
-                              itemCount: widget.playlistLength,
-                              itemBuilder: (context, index) => InkWell(
-                                onTap: () {
-                                  widget.keyPlaylist.currentState?.betterPlayerPlaylistController?.setupDataSource(index);
-                                  setState(() {
-                                    _isShowPL = false;
-                                    _isShowPlaylist = false;
-                                    _index = index;
-                                  });
-                                },
-                                child: Container(
-                                  color: _index == index ? primaryColor.withOpacity(0.3) : Colors.transparent,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 150,
-                                          child: AspectRatio(
-                                            aspectRatio: 16 / 9,
-                                            child: CachedNetworkImage(
-                                              imageUrl: widget.episode[index].episoadeImage ?? '-',
-                                              fit: BoxFit.cover,
+                                      _index = index;
+                                    });
+                                  },
+                                  child: Container(
+                                    color: _index == index ? primaryColor.withOpacity(0.3) : Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: AspectRatio(
+                                              aspectRatio: 16 / 9,
+                                              child: CachedNetworkImage(
+                                                imageUrl: widget.episode[index].episoadeImage ?? '-',
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                widget.episode[index].episoadeName ?? '-',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                style: h4.copyWith(fontWeight: FontWeight.w600),
-                                              ),
-                                              const SizedBox(height: 15),
-                                              Text(
-                                                widget.episode[index].episoadeDescription ?? '-',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 3,
-                                                style: h5.copyWith(
-                                                  color: Colors.white.withOpacity(0.5),
-                                                  fontWeight: FontWeight.w400,
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  widget.episode[index].episoadeName ?? '-',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: h4.copyWith(fontWeight: FontWeight.w600),
                                                 ),
-                                              ),
-                                            ],
+                                                const SizedBox(height: 15),
+                                                Text(
+                                                  widget.episode[index].episoadeDescription ?? '-',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 3,
+                                                  style: h5.copyWith(
+                                                    color: Colors.white.withOpacity(0.5),
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            Icons.download_outlined,
-                                          ),
-                                        )
-                                      ],
+                                          const SizedBox(width: 5),
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.download_outlined,
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ))
