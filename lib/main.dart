@@ -14,6 +14,7 @@ import 'package:snplay/view/pages/root_screen_page.dart';
 import 'package:snplay/view/pages/search_screen_page.dart';
 import 'package:snplay/view/pages/series_detail_screen_page.dart';
 import 'package:snplay/view/pages/splash_screen_page.dart';
+import 'package:snplay/view/pages/subscription_screen_page.dart';
 import 'package:snplay/view/pages/welcome_screen_page.dart';
 
 void main() async {
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => SplashScreen()),
         GetPage(name: '/welcome', page: () => const WelcomeScreen(), transition: Transition.cupertino),
+        GetPage(name: '/subscription', page: () => SubscriptionScreen(), transition: Transition.cupertino),
         GetPage(name: '/login/selection', page: () => LoginSelection(), transition: Transition.cupertino),
         GetPage(name: '/register/selection', page: () => RegisterSelection(), transition: Transition.cupertino),
         GetPage(name: '/login', page: () => Login(), transition: Transition.cupertino),
