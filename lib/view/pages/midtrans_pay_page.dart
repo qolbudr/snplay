@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/view/entities/midtrans_param_entity.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MidtransPay extends StatefulWidget {
@@ -62,7 +63,7 @@ class _MidtransPayState extends State<MidtransPay> {
           if (request.url.substring(0, 6) == 'intent') {
             if (request.url.contains('gopay')) {
               String url = request.url.replaceAll('intent://', 'gojek://');
-              // await launchUrl(Uri.parse(url));
+              await launchUrl(Uri.parse(url));
             }
             return NavigationDecision.prevent;
           } else {
@@ -94,7 +95,7 @@ class _MidtransPayState extends State<MidtransPay> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: WebViewWidget(controller: controller!),
+        body: WebViewWidget(controller: controller),
       ),
     );
   }

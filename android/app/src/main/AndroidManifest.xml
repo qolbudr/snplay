@@ -1,5 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.snplay.app">
+    <queries>
+      <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="gojek" />
+      </intent>
+    </queries>
    <application
         android:label="snplay"
         android:name="${applicationName}"
