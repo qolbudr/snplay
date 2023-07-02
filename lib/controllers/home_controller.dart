@@ -54,10 +54,15 @@ class HomeController extends GetxController {
   getRecentMovie() async {
     try {
       _recentMovieStatus.value = Status.loading;
-      if (loginController.user.subscriptionType!.contains('2')) {
-      } else {}
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/Movies");
-      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data;
+
+      if (loginController.user.subscriptionType!.contains('2')) {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0' || item.type == '1').toList();
+      } else {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0').toList();
+      }
+
       _recentMovie.value = data.where((item) => item.status == '1').toList();
       _recentMovieStatus.value = Status.success;
     } catch (e) {
@@ -69,7 +74,14 @@ class HomeController extends GetxController {
     try {
       _recentSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/WebSeries");
-      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data;
+
+      if (loginController.user.subscriptionType!.contains('2')) {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0' || item.type == '1').toList();
+      } else {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0').toList();
+      }
+
       _recentSeries.value = data.where((item) => item.status == '1').toList();
       _recentSeriesStatus.value = Status.success;
     } catch (e) {

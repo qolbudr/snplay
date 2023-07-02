@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/genre_response_model.dart';
 import 'package:snplay/models/item_response_model.dart';
@@ -17,6 +18,7 @@ class SearchController extends GetxController {
   final Rx<List<Item>> _result = Rx<List<Item>>([]);
   final Rx<bool> _isSearch = Rx<bool>(false);
   Timer? _debounce;
+  final LoginController loginController = Get.put(LoginController());
 
   Status get status => _status.value;
   List<Genre> get genre => _genre.value;
@@ -56,8 +58,29 @@ class SearchController extends GetxController {
         _isSearch.value = true;
         _debounce = Timer(const Duration(milliseconds: 1000), () async {
           _searchStatus.value = Status.loading;
-          List<dynamic> response = await apiService.get('$baseURL/searchContent/$keyword/0');
-          List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
+          List<dynamic> response;
+          if (loginController.user.subscriptionType!.contains('2')) {
+            try {
+              response = await apiService.get('$baseURL/searchContent/$keyword/1');
+            } catch (e) {
+              response = [];
+            }
+          } else {
+            try {
+              response = await apiService.get('$baseURL/searchContent/$keyword/0');
+            } catch (e) {
+              response = [];
+            }
+          }
+
+          List<Item> data;
+
+          if (loginController.user.subscriptionType!.contains('2')) {
+            data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0' || item.type == '1').toList();
+          } else {
+            data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0').toList();
+          }
+
           _result.value = data.where((item) => item.status == '1').toList();
           _searchStatus.value = Status.success;
         });

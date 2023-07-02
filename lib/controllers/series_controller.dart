@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/models/item_response_model.dart';
 import 'package:snplay/models/series_banner_response_model.dart';
 import 'package:snplay/view/entities/item_entity.dart';
@@ -17,6 +18,7 @@ class SeriesCotroller extends GetxController {
   final Rx<List<Item>> _recentSeries = Rx<List<Item>>([]);
   final Rx<List<Item>> _randomSeries = Rx<List<Item>>([]);
   final apiService = ApiService();
+  final LoginController loginController = Get.put(LoginController());
 
   Status get bannerStatus => _bannerStatus.value;
   int get bannerActiveIndex => _bannerActiveIndex.value;
@@ -54,7 +56,14 @@ class SeriesCotroller extends GetxController {
     try {
       _recentSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/WebSeries");
-      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data;
+
+      if (loginController.user.subscriptionType!.contains('2')) {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0' || item.type == '1').toList();
+      } else {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0').toList();
+      }
+
       _recentSeries.value = data.where((item) => item.status == '1').toList();
       _recentSeriesStatus.value = Status.success;
     } catch (e) {
@@ -66,7 +75,14 @@ class SeriesCotroller extends GetxController {
     try {
       _randomSeriesStatus.value = Status.loading;
       List<dynamic> response = await apiService.get("$baseURL/getRandWebSeries");
-      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data;
+
+      if (loginController.user.subscriptionType!.contains('2')) {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0' || item.type == '1').toList();
+      } else {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0').toList();
+      }
+
       _randomSeries.value = data.where((item) => item.status == '1').toList();
       _randomSeriesStatus.value = Status.success;
     } catch (e) {

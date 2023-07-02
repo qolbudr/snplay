@@ -290,7 +290,14 @@ class SeriesDetailController extends GetxController {
           'genres': arguments.genres,
         },
       );
-      List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
+      List<Item> data;
+
+      if (loginController.user.subscriptionType!.contains('2')) {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0' || item.type == '1').toList();
+      } else {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0').toList();
+      }
+
       _similarSeries.value = data;
     } catch (e) {
       return;

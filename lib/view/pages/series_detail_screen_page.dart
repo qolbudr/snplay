@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/download_controller.dart';
+import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/series_detail_controller.dart';
 import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
@@ -19,6 +20,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
   final Item series = Get.arguments;
   final SeriesDetailController seriesDetailController = Get.put(SeriesDetailController());
   final DownloadController downloadController = Get.put(DownloadController());
+  final LoginController loginController = Get.put(LoginController());
 
   Future<void> _showDownloadModal(String episodeId) async {
     showModalBottomSheet<void>(
@@ -351,34 +353,35 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
                                                 ),
                                               ),
                                               const SizedBox(width: 5),
-                                              IconButton(
-                                                onPressed: downloadController.task.indexWhere(
-                                                            (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}') ==
-                                                        -1
-                                                    ? () {
-                                                        Get.snackbar('Loading', 'Memuat informasi download');
-                                                        seriesDetailController.getEpisodeDownloadLink(seriesDetailController.episode[index].id!).then((value) {
-                                                          _showDownloadModal('/${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
-                                                        }).catchError((e) {
-                                                          Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi download');
-                                                        });
-                                                      }
-                                                    : null,
-                                                icon: Builder(builder: (context) {
-                                                  int isDownload = downloadController.task.indexWhere(
-                                                      (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
-                                                  if (isDownload == -1) {
-                                                    return const Icon(
-                                                      Icons.download_outlined,
-                                                    );
-                                                  } else {
-                                                    return const Icon(
-                                                      Icons.check,
-                                                      color: primaryColor,
-                                                    );
-                                                  }
-                                                }),
-                                              )
+                                              if (series.type == '0' || loginController.user.subscriptionType!.contains('3'))
+                                                IconButton(
+                                                  onPressed: downloadController.task.indexWhere(
+                                                              (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}') ==
+                                                          -1
+                                                      ? () {
+                                                          Get.snackbar('Loading', 'Memuat informasi download');
+                                                          seriesDetailController.getEpisodeDownloadLink(seriesDetailController.episode[index].id!).then((value) {
+                                                            _showDownloadModal('/${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
+                                                          }).catchError((e) {
+                                                            Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi download');
+                                                          });
+                                                        }
+                                                      : null,
+                                                  icon: Builder(builder: (context) {
+                                                    int isDownload = downloadController.task.indexWhere(
+                                                        (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
+                                                    if (isDownload == -1) {
+                                                      return const Icon(
+                                                        Icons.download_outlined,
+                                                      );
+                                                    } else {
+                                                      return const Icon(
+                                                        Icons.check,
+                                                        color: primaryColor,
+                                                      );
+                                                    }
+                                                  }),
+                                                )
                                             ],
                                           ),
                                         ),

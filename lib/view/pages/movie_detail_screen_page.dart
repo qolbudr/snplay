@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/movie_controller.dart';
 import 'package:snplay/controllers/movie_detail_controller.dart';
 import 'package:snplay/view/entities/item_entity.dart';
@@ -19,6 +20,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   final Item movie = Get.arguments;
   final MovieDetailController movieDetailController = Get.put(MovieDetailController());
   final MovieController movieController = Get.put(MovieController());
+  final LoginController loginController = Get.put(LoginController());
 
   Future<void> _showDownloadModal() async {
     showModalBottomSheet<void>(
@@ -192,19 +194,20 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                           },
                                           icon: (movieDetailController.isFavourite) ? const Icon(Icons.bookmark, color: primaryColor) : const Icon(Icons.bookmark_outline),
                                         ),
-                                        IconButton(
-                                          splashRadius: 20,
-                                          onPressed: movieDetailController.isDownloaded
-                                              ? null
-                                              : () {
-                                                  if (movieDetailController.downloadLink.isEmpty) {
-                                                    Get.snackbar("Ada Kesalahan", "Unduhan tidak tersedia");
-                                                  } else {
-                                                    _showDownloadModal();
-                                                  }
-                                                },
-                                          icon: movieDetailController.isDownloaded ? const Icon(Icons.check, color: primaryColor) : const Icon(Icons.download_outlined),
-                                        )
+                                        if (movie.type == '0' || loginController.user.subscriptionType!.contains('3'))
+                                          IconButton(
+                                            splashRadius: 20,
+                                            onPressed: movieDetailController.isDownloaded
+                                                ? null
+                                                : () {
+                                                    if (movieDetailController.downloadLink.isEmpty) {
+                                                      Get.snackbar("Ada Kesalahan", "Unduhan tidak tersedia");
+                                                    } else {
+                                                      _showDownloadModal();
+                                                    }
+                                                  },
+                                            icon: movieDetailController.isDownloaded ? const Icon(Icons.check, color: primaryColor) : const Icon(Icons.download_outlined),
+                                          )
                                       ],
                                     )
                                   ],
