@@ -14,7 +14,7 @@ class UserData {
 
   void setSubscription(Subscription subscription) {
     activeSubscription = subscription.name;
-    subscriptionType = subscriptionType;
+    subscriptionType = subscription.subscriptionType;
     subscriptionExp = DateTime.now().add(Duration(days: int.parse(subscription.time!)));
     subscriptionRemaining = int.parse(subscription.time!);
   }

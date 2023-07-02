@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/subscription_controller.dart';
 
 class SubscriptionScreen extends StatelessWidget {
   SubscriptionScreen({super.key});
   final SubscriptionController subscriptionController = Get.put(SubscriptionController());
+  final LoginController loginController = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,22 @@ class SubscriptionScreen extends StatelessWidget {
               )
             : Column(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Langganan saat ini",
+                          style: h4,
+                        ),
+                        Text(
+                          loginController.user.activeSubscription ?? '-',
+                          style: h4.copyWith(color: primaryColor),
+                        )
+                      ],
+                    ),
+                  ),
                   Text(subscriptionController.updater.toString(), style: smallText.copyWith(fontSize: 1, color: Colors.transparent)),
                   Expanded(
                     child: ListView.separated(
