@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/search', page: () => Search(), transition: Transition.cupertino),
         GetPage(name: '/genre', page: () => GenreScreen(), transition: Transition.cupertino),
         GetPage(name: '/midtrans-pay', page: () => const MidtransPay(), transition: Transition.cupertino),
-        GetPage(name: '/success', page: () => const Success(), transition: Transition.cupertino),
+        GetPage(name: '/success', page: () => Success(), transition: Transition.cupertino),
       ],
     );
   }

@@ -26,7 +26,7 @@ class UserData {
     role = json['role'];
     activeSubscription = json['active_subscription'];
     subscriptionType = json['subscription_type'];
-    subscriptionExp = json['subscription_exp'];
+    subscriptionExp = DateTime.tryParse(json['subscription_exp']);
     subscriptionRemaining = json['subscription_remaining'];
   }
 

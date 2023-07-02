@@ -55,7 +55,7 @@ class Root extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   children: [
                     GestureDetector(
-                      onTap: () => Get.toNamed('/success'),
+                      onTap: () => Get.toNamed('/subscription'),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(15),

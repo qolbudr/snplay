@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/models/custom_banner_response_model.dart';
 import 'package:snplay/models/item_response_model.dart';
@@ -16,6 +17,7 @@ class HomeController extends GetxController {
   final Rx<List<Item>> _recentSeries = Rx<List<Item>>([]);
   final apiService = ApiService();
   final Rx<int> _bannerActiveIndex = Rx<int>(0);
+  final LoginController loginController = Get.put(LoginController());
 
   Status get bannerStatus => _bannerStatus.value;
   List<CustomBanner> get customBanner => _customBanner.value;
@@ -52,6 +54,8 @@ class HomeController extends GetxController {
   getRecentMovie() async {
     try {
       _recentMovieStatus.value = Status.loading;
+      if (loginController.user.subscriptionType!.contains('2')) {
+      } else {}
       List<dynamic> response = await apiService.get("$baseURL/getRecentContentList/Movies");
       List<Item> data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).toList();
       _recentMovie.value = data.where((item) => item.status == '1').toList();
