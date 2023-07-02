@@ -29,7 +29,8 @@ class DownloadController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async {
+    await FileDownloader().resetUpdates();
     _stream = FileDownloader().updates.listen((update) async {
       if (update is TaskStatusUpdate) {
         int index = _task.value.indexWhere((element) => element.taskId == update.task.taskId);

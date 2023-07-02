@@ -16,7 +16,7 @@ class Root extends StatelessWidget {
   final LoginController loginController = Get.put(LoginController());
   final RootController rootController = Get.put(RootController());
   final List<String> appBarText = ["Beranda", "Film", "Series", "Tersimpan", "Unduhan"];
-  final List<Widget> screen = [Home(), MovieScreen(), SeriesScreen(), Saved(), DownloadScreen()];
+  final List<Widget> screen = [Home(), MovieScreen(), SeriesScreen(), Saved(), const DownloadScreen()];
 
   @override
   Widget build(BuildContext context) {

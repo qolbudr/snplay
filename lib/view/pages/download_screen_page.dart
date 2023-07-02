@@ -4,8 +4,14 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/download_controller.dart';
 
-class DownloadScreen extends StatelessWidget {
-  DownloadScreen({super.key});
+class DownloadScreen extends StatefulWidget {
+  const DownloadScreen({super.key});
+
+  @override
+  State<DownloadScreen> createState() => _DownloadScreenState();
+}
+
+class _DownloadScreenState extends State<DownloadScreen> {
   final DownloadController downloadController = Get.put(DownloadController());
 
   @override
@@ -41,13 +47,15 @@ class DownloadScreen extends StatelessWidget {
                     ),
                     title: Text(downloadController.removeDupliTask[index].item.name ?? '-'),
                     subtitle: Text(downloadController.removeDupliTask[index].item.genres ?? '-'),
-                    trailing: IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                      ),
-                      onPressed: () => downloadController.deleteTask(index),
-                    ),
+                    trailing: (downloadController.removeDupliTask[index].progress >= 1)
+                        ? IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => downloadController.deleteTask(index),
+                          )
+                        : const SizedBox(),
                   ),
                   if (downloadController.removeDupliTask[index].progress < 1)
                     Positioned(

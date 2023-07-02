@@ -24,7 +24,7 @@ class LoginResponseModel {
     activeSubscription = json['active_subscription'];
     subscriptionType = json['subscription_type'];
     subscriptionExp = json['subscription_exp'];
-    subscriptionRemaining = json['subscription_remaining'];
+    subscriptionRemaining = int.tryParse(json['subscription_remaining']);
   }
 
   Map<String, dynamic> toJson() {
