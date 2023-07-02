@@ -155,111 +155,103 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: GestureDetector(
-                    onTap: () {
+                  child: AnimatedOpacity(
+                    onEnd: () {
                       setState(() {
-                        _changeToShow = true;
-                        _isControlShow = false;
+                        _isShowPL = false;
                       });
                     },
-                    child: AnimatedOpacity(
-                      onEnd: () {
-                        setState(() {
-                          _isShowPL = false;
-                        });
-                      },
-                      duration: const Duration(milliseconds: 500),
-                      opacity: _isShowPlaylist ? 1 : 0,
-                      child: Container(
-                        color: secondaryColor,
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    setState(
-                                      () {
-                                        _isShowPL = false;
-                                        _isShowPlaylist = false;
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.close),
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Expanded(
-                              child: ListView.separated(
-                                separatorBuilder: (context, index) => const Divider(),
-                                itemCount: widget.playlistLength,
-                                itemBuilder: (context, index) => InkWell(
-                                  onTap: () {
-                                    widget.keyPlaylist.currentState?.betterPlayerPlaylistController?.setupDataSource(index);
-                                    setState(() {
+                    duration: const Duration(milliseconds: 500),
+                    opacity: _isShowPlaylist ? 1 : 0,
+                    child: Container(
+                      color: secondaryColor,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  setState(
+                                    () {
                                       _isShowPL = false;
                                       _isShowPlaylist = false;
-                                      _index = index;
-                                    });
-                                  },
-                                  child: Container(
-                                    color: _index == index ? primaryColor.withOpacity(0.3) : Colors.transparent,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 150,
-                                            child: AspectRatio(
-                                              aspectRatio: 16 / 9,
-                                              child: CachedNetworkImage(
-                                                imageUrl: widget.episode[index].episoadeImage ?? '-',
-                                                fit: BoxFit.cover,
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.close),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Expanded(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) => const Divider(),
+                              itemCount: widget.playlistLength,
+                              itemBuilder: (context, index) => InkWell(
+                                onTap: () {
+                                  widget.keyPlaylist.currentState?.betterPlayerPlaylistController?.setupDataSource(index);
+                                  setState(() {
+                                    _isShowPL = false;
+                                    _isShowPlaylist = false;
+                                    _index = index;
+                                  });
+                                },
+                                child: Container(
+                                  color: _index == index ? primaryColor.withOpacity(0.3) : Colors.transparent,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 150,
+                                          child: AspectRatio(
+                                            aspectRatio: 16 / 9,
+                                            child: CachedNetworkImage(
+                                              imageUrl: widget.episode[index].episoadeImage ?? '-',
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                widget.episode[index].episoadeName ?? '-',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: h4.copyWith(fontWeight: FontWeight.w600),
                                               ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  widget.episode[index].episoadeName ?? '-',
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  style: h4.copyWith(fontWeight: FontWeight.w600),
+                                              const SizedBox(height: 15),
+                                              Text(
+                                                widget.episode[index].episoadeDescription ?? '-',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 3,
+                                                style: h5.copyWith(
+                                                  color: Colors.white.withOpacity(0.5),
+                                                  fontWeight: FontWeight.w400,
                                                 ),
-                                                const SizedBox(height: 15),
-                                                Text(
-                                                  widget.episode[index].episoadeDescription ?? '-',
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 3,
-                                                  style: h5.copyWith(
-                                                    color: Colors.white.withOpacity(0.5),
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(width: 5),
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.download_outlined,
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                            Icons.download_outlined,
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ))
@@ -270,185 +262,193 @@ class _CustomPlayerSeriesControl extends State<CustomPlayerSeriesControl> {
                       right: 0,
                       bottom: 0,
                       child: !_changeToShow
-                          ? AnimatedOpacity(
-                              onEnd: () {
+                          ? GestureDetector(
+                              onTap: () {
                                 setState(() {
+                                  _isControlShow = false;
                                   _changeToShow = true;
                                 });
                               },
-                              duration: const Duration(milliseconds: 500),
-                              opacity: _isControlShow ? 1 : 0,
-                              child: Scaffold(
-                                backgroundColor: Colors.black.withOpacity(0.5),
-                                body: Stack(
-                                  children: [
-                                    SizedBox(
-                                      width: Get.width,
-                                      height: Get.height,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(15),
-                                            width: Get.width,
-                                            child: Row(
-                                              children: [
-                                                const Spacer(),
-                                                Row(
-                                                  children: [
-                                                    // IconButton(
-                                                    //   onPressed: () => _showQualityModal(),
-                                                    //   icon: Icon(Icons.high_quality, size: Get.width * 0.03),
-                                                    // ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        _resetTimer();
-                                                        if (_enableSubtitle) {
-                                                          _enableSubtitle = false;
-                                                          widget.controller.setupSubtitleSource(BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.none));
-                                                        } else {
-                                                          _enableSubtitle = true;
-                                                          List<BetterPlayerSubtitlesSource> source =
-                                                              widget.controller.betterPlayerSubtitlesSourceList.where((element) => element.selectedByDefault ?? true).toList();
-                                                          if (source.isNotEmpty) {
-                                                            widget.controller.setupSubtitleSource(source.first);
-                                                          } else {
-                                                            Get.snackbar('Ada Kesalahan', 'Subtitle tidak ditemukan');
-                                                          }
-                                                        }
-                                                      },
-                                                      icon: Icon(_enableSubtitle ? Icons.subtitles : Icons.subtitles_off, size: Get.width * 0.03),
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        _resetTimer();
-                                                        _showPlaylist();
-                                                      },
-                                                      icon: Icon(Icons.playlist_play_outlined, size: Get.width * 0.03),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          (_isBuffer)
-                                              ? Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: const [
-                                                    CircularProgressIndicator(
-                                                      color: primaryColor,
-                                                    )
-                                                  ],
-                                                )
-                                              : const SizedBox(),
-                                          const SizedBox(height: 60),
-                                          const Spacer(),
-                                        ],
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      left: 0,
-                                      child: Container(
-                                        height: 146,
+                              child: AnimatedOpacity(
+                                onEnd: () {
+                                  setState(() {
+                                    _changeToShow = true;
+                                  });
+                                },
+                                duration: const Duration(milliseconds: 500),
+                                opacity: _isControlShow ? 1 : 0,
+                                child: Scaffold(
+                                  backgroundColor: Colors.black.withOpacity(0.5),
+                                  body: Stack(
+                                    children: [
+                                      SizedBox(
                                         width: Get.width,
-                                        padding: const EdgeInsets.all(15),
-                                        color: secondaryColor.withOpacity(0.5),
+                                        height: Get.height,
                                         child: Column(
                                           children: [
-                                            Expanded(
-                                              flex: 40,
-                                              child: BetterPlayerMaterialVideoProgressBar(
-                                                widget.controller.videoPlayerController,
-                                                widget.controller,
-                                                colors: BetterPlayerProgressColors(
-                                                  playedColor: primaryColor,
-                                                  bufferedColor: const Color.fromARGB(255, 49, 49, 49),
-                                                  handleColor: primaryColor,
-                                                  backgroundColor: Colors.white,
-                                                ),
+                                            Container(
+                                              padding: const EdgeInsets.all(15),
+                                              width: Get.width,
+                                              child: Row(
+                                                children: [
+                                                  const Spacer(),
+                                                  Row(
+                                                    children: [
+                                                      // IconButton(
+                                                      //   onPressed: () => _showQualityModal(),
+                                                      //   icon: Icon(Icons.high_quality, size: Get.width * 0.03),
+                                                      // ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          _resetTimer();
+                                                          if (_enableSubtitle) {
+                                                            _enableSubtitle = false;
+                                                            widget.controller.setupSubtitleSource(BetterPlayerSubtitlesSource(type: BetterPlayerSubtitlesSourceType.none));
+                                                          } else {
+                                                            _enableSubtitle = true;
+                                                            List<BetterPlayerSubtitlesSource> source =
+                                                                widget.controller.betterPlayerSubtitlesSourceList.where((element) => element.selectedByDefault ?? true).toList();
+                                                            if (source.isNotEmpty) {
+                                                              widget.controller.setupSubtitleSource(source.first);
+                                                            } else {
+                                                              Get.snackbar('Ada Kesalahan', 'Subtitle tidak ditemukan');
+                                                            }
+                                                          }
+                                                        },
+                                                        icon: Icon(_enableSubtitle ? Icons.subtitles : Icons.subtitles_off, size: Get.width * 0.03),
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          _resetTimer();
+                                                          _showPlaylist();
+                                                        },
+                                                        icon: Icon(Icons.playlist_play_outlined, size: Get.width * 0.03),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
                                               ),
                                             ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              children: [
-                                                Text(BetterPlayerUtils.formatDuration(widget.controller.videoPlayerController?.value.position ?? const Duration(seconds: 0))),
-                                                const Spacer(),
-                                                Text(BetterPlayerUtils.formatDuration(widget.controller.videoPlayerController?.value.duration ?? const Duration(seconds: 0))),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 30),
-                                            Row(
-                                              children: [
-                                                const Spacer(),
-                                                Row(
-                                                  children: [
-                                                    IconButton(
-                                                        onPressed: () async {
-                                                          _resetTimer();
-                                                          Duration? videoDuration = await widget.controller.videoPlayerController!.position;
-                                                          setState(() {
-                                                            if (widget.controller.isPlaying()!) {
-                                                              Duration rewindDuration = Duration(seconds: (videoDuration!.inSeconds - 10));
-                                                              if (rewindDuration < widget.controller.videoPlayerController!.value.duration!) {
-                                                                widget.controller.seekTo(const Duration(seconds: 0));
-                                                              } else {
-                                                                widget.controller.seekTo(rewindDuration);
-                                                              }
-                                                            }
-                                                          });
-                                                        },
-                                                        icon: Icon(Icons.fast_rewind, size: Get.width * 0.03)),
-                                                    IconButton(onPressed: null, icon: Icon(Icons.skip_previous, size: Get.width * 0.03)),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        _resetTimer();
-                                                        if (widget.controller.isPlaying() ?? false) {
-                                                          widget.controller.pause();
-                                                        } else {
-                                                          widget.controller.play();
-                                                        }
-                                                      },
-                                                      child: Container(
-                                                        width: Get.width * 0.065,
-                                                        height: Get.width * 0.065,
-                                                        decoration: const BoxDecoration(shape: BoxShape.circle, color: primaryColor),
-                                                        child: Center(
-                                                          child: Icon(
-                                                            ((widget.controller.isPlaying() ?? false)) ? Icons.pause : Icons.play_arrow,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    IconButton(onPressed: null, icon: Icon(Icons.skip_next, size: Get.width * 0.03)),
-                                                    IconButton(
-                                                        onPressed: () async {
-                                                          _resetTimer();
-                                                          Duration? videoDuration = await widget.controller.videoPlayerController!.position;
-                                                          setState(() {
-                                                            if (widget.controller.isPlaying()!) {
-                                                              Duration forwardDuration = Duration(seconds: (videoDuration!.inSeconds + 10));
-                                                              if (forwardDuration > widget.controller.videoPlayerController!.value.duration!) {
-                                                                widget.controller.seekTo(const Duration(seconds: 0));
-                                                                widget.controller.pause();
-                                                              } else {
-                                                                widget.controller.seekTo(forwardDuration);
-                                                              }
-                                                            }
-                                                          });
-                                                        },
-                                                        icon: Icon(Icons.fast_forward, size: Get.width * 0.03)),
-                                                  ],
-                                                ),
-                                                const Spacer(),
-                                              ],
-                                            )
+                                            const Spacer(),
+                                            (_isBuffer)
+                                                ? Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: const [
+                                                      CircularProgressIndicator(
+                                                        color: primaryColor,
+                                                      )
+                                                    ],
+                                                  )
+                                                : const SizedBox(),
+                                            const SizedBox(height: 60),
+                                            const Spacer(),
                                           ],
                                         ),
                                       ),
-                                    )
-                                  ],
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        child: Container(
+                                          height: 146,
+                                          width: Get.width,
+                                          padding: const EdgeInsets.all(15),
+                                          color: secondaryColor.withOpacity(0.5),
+                                          child: Column(
+                                            children: [
+                                              Expanded(
+                                                flex: 40,
+                                                child: BetterPlayerMaterialVideoProgressBar(
+                                                  widget.controller.videoPlayerController,
+                                                  widget.controller,
+                                                  colors: BetterPlayerProgressColors(
+                                                    playedColor: primaryColor,
+                                                    bufferedColor: const Color.fromARGB(255, 49, 49, 49),
+                                                    handleColor: primaryColor,
+                                                    backgroundColor: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  Text(BetterPlayerUtils.formatDuration(widget.controller.videoPlayerController?.value.position ?? const Duration(seconds: 0))),
+                                                  const Spacer(),
+                                                  Text(BetterPlayerUtils.formatDuration(widget.controller.videoPlayerController?.value.duration ?? const Duration(seconds: 0))),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 30),
+                                              Row(
+                                                children: [
+                                                  const Spacer(),
+                                                  Row(
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: () async {
+                                                            _resetTimer();
+                                                            Duration? videoDuration = await widget.controller.videoPlayerController!.position;
+                                                            setState(() {
+                                                              if (widget.controller.isPlaying()!) {
+                                                                Duration rewindDuration = Duration(seconds: (videoDuration!.inSeconds - 10));
+                                                                if (rewindDuration < widget.controller.videoPlayerController!.value.duration!) {
+                                                                  widget.controller.seekTo(const Duration(seconds: 0));
+                                                                } else {
+                                                                  widget.controller.seekTo(rewindDuration);
+                                                                }
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: Icon(Icons.fast_rewind, size: Get.width * 0.03)),
+                                                      IconButton(onPressed: null, icon: Icon(Icons.skip_previous, size: Get.width * 0.03)),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          _resetTimer();
+                                                          if (widget.controller.isPlaying() ?? false) {
+                                                            widget.controller.pause();
+                                                          } else {
+                                                            widget.controller.play();
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          width: Get.width * 0.065,
+                                                          height: Get.width * 0.065,
+                                                          decoration: const BoxDecoration(shape: BoxShape.circle, color: primaryColor),
+                                                          child: Center(
+                                                            child: Icon(
+                                                              ((widget.controller.isPlaying() ?? false)) ? Icons.pause : Icons.play_arrow,
+                                                              color: Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      IconButton(onPressed: null, icon: Icon(Icons.skip_next, size: Get.width * 0.03)),
+                                                      IconButton(
+                                                          onPressed: () async {
+                                                            _resetTimer();
+                                                            Duration? videoDuration = await widget.controller.videoPlayerController!.position;
+                                                            setState(() {
+                                                              if (widget.controller.isPlaying()!) {
+                                                                Duration forwardDuration = Duration(seconds: (videoDuration!.inSeconds + 10));
+                                                                if (forwardDuration > widget.controller.videoPlayerController!.value.duration!) {
+                                                                  widget.controller.seekTo(const Duration(seconds: 0));
+                                                                  widget.controller.pause();
+                                                                } else {
+                                                                  widget.controller.seekTo(forwardDuration);
+                                                                }
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: Icon(Icons.fast_forward, size: Get.width * 0.03)),
+                                                    ],
+                                                  ),
+                                                  const Spacer(),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             )
