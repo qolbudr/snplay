@@ -92,11 +92,10 @@ class _MidtransPayState extends State<MidtransPay> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pembayaran"),
+    return SafeArea(
+      child: Scaffold(
+        body: WebViewWidget(controller: controller!),
       ),
-      body: WebViewWidget(controller: controller!),
     );
   }
 }

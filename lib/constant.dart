@@ -10,7 +10,7 @@ const Map<String, dynamic> midtransConfig = {
   'url': 'https://app.sandbox.midtrans.com/snap/snap.js',
 };
 
-const vercelURL = 'http://10.0.2.2:5000';
+const vercelURL = 'https://snplay-payment-be.vercel.app';
 
 const primaryColor = Color(0xFFECAC07);
 const secondaryColor = Color(0xFF3F3F3F);

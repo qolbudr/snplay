@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/login_controller.dart';
@@ -47,11 +45,13 @@ class SubscriptionController extends GetxController {
 
   createPayment(int index) async {
     try {
+      List<int> encoded = utf8.encode('${subscription[index].id}#${loginController.user.id}#${DateTime.now().millisecondsSinceEpoch}');
+      String orderId = base64Encode(encoded);
       _buttonLoading.value[index] = true;
       _updater.value += 1;
       Map<String, dynamic> param = {
         'transaction_details': {
-          'order_id': "${subscription[index].id}#${loginController.user.id}#${DateTime.now().millisecondsSinceEpoch}",
+          'order_id': orderId,
           'gross_amount': subscription[index].amount,
         },
         'credit_card': {
