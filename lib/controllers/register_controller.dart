@@ -62,8 +62,8 @@ class RegisterController extends GetxController {
       if (model.status == 'Email Already Regestered') {
         throw Exception('Email Already Regestered');
       } else {
-        dbService.setUser(model);
         UserData data = model.toEntity();
+        dbService.setUser(data);
         loginController.setUser = data;
         _status.value = Status.success;
         Get.offAllNamed('/root');

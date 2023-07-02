@@ -8,6 +8,7 @@ import 'package:snplay/controllers/download_controller.dart';
 import 'package:snplay/controllers/services/api_service.dart';
 import 'package:snplay/controllers/services/db_service.dart';
 import 'package:snplay/models/login_response_model.dart';
+import 'package:snplay/view/entities/subscription_entity.dart';
 import 'package:snplay/view/entities/user_data_entity.dart';
 
 class LoginController extends GetxController {
@@ -89,8 +90,8 @@ class LoginController extends GetxController {
             if (model.status == 'Email Already Regestered') {
               throw Exception('Email Already Regestered');
             } else {
-              dbService.setUser(model);
               UserData data = model.toEntity();
+              dbService.setUser(data);
               setUser = data;
               _status.value = Status.success;
               Get.offAllNamed('/root');
@@ -122,8 +123,8 @@ class LoginController extends GetxController {
       if (model.status == 'Invalid Credential') {
         throw Exception('Email/Password salah');
       } else {
-        dbService.setUser(model);
         UserData data = model.toEntity();
+        dbService.setUser(data);
         _user.value = data;
         _status.value = Status.success;
         Get.offAllNamed('/root');
@@ -132,6 +133,11 @@ class LoginController extends GetxController {
       _status.value = Status.error;
       rethrow;
     }
+  }
+
+  setSubscription(Subscription subscription) {
+    user.setSubscription(subscription);
+    dbService.setUser(user);
   }
 
   logout() async {

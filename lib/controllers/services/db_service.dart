@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:snplay/models/login_response_model.dart';
 import 'package:snplay/view/entities/download_task_entity.dart';
 import 'package:snplay/view/entities/user_data_entity.dart';
 
@@ -21,7 +20,7 @@ class DBService {
     return prefs;
   }
 
-  Future<void> setUser(LoginResponseModel model) async {
+  Future<void> setUser(UserData model) async {
     final db = await database;
     await db.setString('user', jsonEncode(model.toJson()));
   }
@@ -30,8 +29,8 @@ class DBService {
     final db = await database;
     String? user = db.getString('user');
     if (user != null) {
-      LoginResponseModel model = LoginResponseModel.fromJson(jsonDecode(user));
-      return model.toEntity();
+      UserData model = UserData.fromJson(jsonDecode(user));
+      return model;
     } else {
       throw Exception('Data user tidak ada');
     }

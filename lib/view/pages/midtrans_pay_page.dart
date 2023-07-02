@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
+import 'package:snplay/controllers/login_controller.dart';
 import 'package:snplay/view/entities/midtrans_param_entity.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -16,6 +17,7 @@ class MidtransPay extends StatefulWidget {
 class _MidtransPayState extends State<MidtransPay> {
   MidtransParam param = Get.arguments;
   late WebViewController controller;
+  final LoginController loginController = Get.put(LoginController());
 
   String _getHtmlString() {
     String htmlString = '''
@@ -77,9 +79,11 @@ class _MidtransPayState extends State<MidtransPay> {
   void androidMessage(JavaScriptMessage receiver) {
     if (receiver.message != 'undefined') {
       if (receiver.message == 'close' || receiver.message == 'error') {
-        Navigator.pop(context);
-      } else {
         Get.back();
+        Get.snackbar('Gagal', 'Pembayaran gagal');
+      } else {
+        loginController.setSubscription(param.subscription);
+        Get.offNamedUntil('/success', (route) => route.settings.name == '/root', arguments: 'Pembayaran berhasil dilakukan');
         Get.snackbar('Berhasil', 'Pembayaran berhasil');
       }
     }
