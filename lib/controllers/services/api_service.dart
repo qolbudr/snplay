@@ -25,7 +25,11 @@ class ApiService {
         body: jsonEncode(data),
       );
       String body = response.body;
-      return jsonDecode(body);
+      try {
+        return jsonDecode(body);
+      } catch (e) {
+        return body;
+      }
     } catch (e) {
       rethrow;
     }

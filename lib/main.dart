@@ -7,6 +7,7 @@ import 'package:snplay/view/pages/auth/login_selection_page.dart';
 import 'package:snplay/view/pages/auth/register_page.dart';
 import 'package:snplay/view/pages/auth/register_selection_page.dart';
 import 'package:snplay/view/pages/genre_screen_page.dart';
+import 'package:snplay/view/pages/midtrans_pay_page.dart';
 import 'package:snplay/view/pages/movie_detail_screen_page.dart';
 import 'package:snplay/view/pages/player_screen_page.dart';
 import 'package:snplay/view/pages/player_series_screen_page.dart';
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/player/series', page: () => const PlayerSeries(), transition: Transition.cupertino),
         GetPage(name: '/search', page: () => Search(), transition: Transition.cupertino),
         GetPage(name: '/genre', page: () => GenreScreen(), transition: Transition.cupertino),
+        GetPage(name: '/midtrans-pay', page: () => const MidtransPay(), transition: Transition.cupertino),
       ],
     );
   }

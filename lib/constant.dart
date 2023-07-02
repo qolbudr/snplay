@@ -4,6 +4,14 @@ const apiKey = 'jBybHUSehsW4oRzC';
 const baseURL = 'https://api.snplay.co/android';
 const tmdbBaseURL = 'https://api.themoviedb.org/3';
 const tmdbApiKey = 'cad7722e1ca44bd5f1ea46b59c8d54c8';
+const Map<String, dynamic> midtransConfig = {
+  'clientKey': 'SB-Mid-client-57yQ1MZNJIdEmX2M',
+  'serverKey': 'SB-Mid-server-_uIYFZ5_zg_LAEcSDjB63KNS',
+  'url': 'https://app.sandbox.midtrans.com/snap/snap.js',
+};
+
+const vercelURL = 'http://10.0.2.2:5000';
+
 const primaryColor = Color(0xFFECAC07);
 const secondaryColor = Color(0xFF3F3F3F);
 const h1 = TextStyle(fontSize: 35);
