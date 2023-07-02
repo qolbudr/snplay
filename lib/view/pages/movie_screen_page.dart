@@ -59,6 +59,46 @@ class MovieScreen extends StatelessWidget {
             ),
           ),
         ),
+        Obx(
+          () => movieController.becauseMovie.isEmpty
+              ? const SizedBox()
+              : Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    SectionTitle(title: "Berdasarkan Minat Anda", detail: "Film di SnPlay", onTap: () {}),
+                    const SizedBox(height: 10),
+                    movieController.becauseStatus != Status.success
+                        ? AspectRatio(
+                            aspectRatio: Get.width / 150,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (context, index) => const SizedBox(width: 10),
+                              itemCount: 5,
+                              itemBuilder: (context, index) => const ItemCardLoading(),
+                            ),
+                          )
+                        : AspectRatio(
+                            aspectRatio: Get.width / 150,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (context, index) => const SizedBox(width: 10),
+                              itemCount: movieController.becauseMovie.length,
+                              itemBuilder: (context, index) => ItemCard(
+                                poster: movieController.becauseMovie[index].poster ?? '-',
+                                name: movieController.becauseMovie[index].name ?? '-',
+                                onTap: () {
+                                  Get.toNamed('/movie', arguments: movieController.becauseMovie[index]);
+                                },
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+        ),
         const SizedBox(height: 20),
         SectionTitle(title: "Film Baru Ditambahkan", detail: "Film di SnPlay", onTap: () {}),
         Obx(

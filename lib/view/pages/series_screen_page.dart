@@ -59,6 +59,46 @@ class SeriesScreen extends StatelessWidget {
             ),
           ),
         ),
+        Obx(
+          () => seriesCotroller.becauseSeries.isEmpty
+              ? const SizedBox()
+              : Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    SectionTitle(title: "Berdasarkan Minat Anda", detail: "Series di SnPlay", onTap: () {}),
+                    const SizedBox(height: 10),
+                    seriesCotroller.becauseStatus != Status.success
+                        ? AspectRatio(
+                            aspectRatio: Get.width / 150,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (context, index) => const SizedBox(width: 10),
+                              itemCount: 5,
+                              itemBuilder: (context, index) => const ItemCardLoading(),
+                            ),
+                          )
+                        : AspectRatio(
+                            aspectRatio: Get.width / 150,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (context, index) => const SizedBox(width: 10),
+                              itemCount: seriesCotroller.becauseSeries.length,
+                              itemBuilder: (context, index) => ItemCard(
+                                poster: seriesCotroller.becauseSeries[index].poster ?? '-',
+                                name: seriesCotroller.becauseSeries[index].name ?? '-',
+                                onTap: () {
+                                  Get.toNamed('/series', arguments: seriesCotroller.becauseSeries[index]);
+                                },
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+        ),
         const SizedBox(height: 20),
         SectionTitle(title: "Series Baru Ditambahkan", detail: "Series di SnPlay", onTap: () {}),
         Obx(

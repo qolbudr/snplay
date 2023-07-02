@@ -64,6 +64,7 @@ class HomeController extends GetxController {
       }
 
       _recentMovie.value = data.where((item) => item.status == '1').toList();
+      _recentMovie.value = recentMovie.sublist(0, recentMovie.length >= 5 ? 5 : recentMovie.length);
       _recentMovieStatus.value = Status.success;
     } catch (e) {
       _recentMovieStatus.value = Status.error;
@@ -83,6 +84,7 @@ class HomeController extends GetxController {
       }
 
       _recentSeries.value = data.where((item) => item.status == '1').toList();
+      _recentSeries.value = recentSeries.sublist(0, recentSeries.length >= 5 ? 5 : recentSeries.length);
       _recentSeriesStatus.value = Status.success;
     } catch (e) {
       _recentSeriesStatus.value = Status.error;

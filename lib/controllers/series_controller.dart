@@ -11,22 +11,26 @@ class SeriesCotroller extends GetxController {
   static SeriesCotroller instance = Get.find();
 
   final Rx<Status> _bannerStatus = Rx<Status>(Status.empty);
+  final Rx<Status> _becauseStatus = Rx<Status>(Status.empty);
   final Rx<Status> _recentSeriesStatus = Rx<Status>(Status.empty);
   final Rx<Status> _randomSeriesStatus = Rx<Status>(Status.empty);
   final Rx<int> _bannerActiveIndex = Rx<int>(0);
   final Rx<List<SeriesBanner>> _seriesBanner = Rx<List<SeriesBanner>>([]);
   final Rx<List<Item>> _recentSeries = Rx<List<Item>>([]);
   final Rx<List<Item>> _randomSeries = Rx<List<Item>>([]);
+  final Rx<List<Item>> _becauseSeries = Rx<List<Item>>([]);
   final apiService = ApiService();
   final LoginController loginController = Get.put(LoginController());
 
   Status get bannerStatus => _bannerStatus.value;
+  Status get becauseStatus => _becauseStatus.value;
   int get bannerActiveIndex => _bannerActiveIndex.value;
   List<SeriesBanner> get seriesBanner => _seriesBanner.value;
   Status get recentSeriesStatus => _recentSeriesStatus.value;
   Status get randomSeriesStatus => _randomSeriesStatus.value;
   List<Item> get recentSeries => _recentSeries.value;
   List<Item> get randomSeries => _randomSeries.value;
+  List<Item> get becauseSeries => _becauseSeries.value;
 
   set setBannerActiveIndex(index) {
     _bannerActiveIndex.value = index;
@@ -38,6 +42,7 @@ class SeriesCotroller extends GetxController {
     getSeriesBanner();
     getRecentSeries();
     getRandomSeries();
+    getBecause();
   }
 
   getSeriesBanner() async {
@@ -68,6 +73,25 @@ class SeriesCotroller extends GetxController {
       _recentSeriesStatus.value = Status.success;
     } catch (e) {
       _recentSeriesStatus.value = Status.error;
+    }
+  }
+
+  getBecause() async {
+    try {
+      _becauseStatus.value = Status.loading;
+      List<dynamic> response = await apiService.get("$baseURL/beacauseYouWatched/WebSeries/${loginController.user.id}/5");
+      List<Item> data;
+
+      if (loginController.user.subscriptionType!.contains('2')) {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0' || item.type == '1').toList();
+      } else {
+        data = response.map((e) => ItemResponseModel.fromJson(e).toEntity()).where((item) => item.type == '0').toList();
+      }
+
+      _becauseSeries.value = data.where((item) => item.status == '1').toList();
+      _becauseStatus.value = Status.success;
+    } catch (e) {
+      _becauseStatus.value = Status.error;
     }
   }
 
