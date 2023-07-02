@@ -159,6 +159,7 @@ class MovieDetailController extends GetxController {
               .toList(),
         ),
       );
+      await apiService.post('$baseURL/addwatchlog', {'user_id': loginController.user.id, 'content_id': arguments.id, 'content_type': arguments.contentType});
       Get.toNamed('/player', arguments: controller);
     } catch (e) {
       Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi player');
