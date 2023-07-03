@@ -271,6 +271,37 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                     )
                                   ],
                                 ),
+                                const SizedBox(height: 20),
+                                const Text("Pemeran", style: h4),
+                                const SizedBox(height: 10),
+                                AspectRatio(
+                                  aspectRatio: Get.width / 140,
+                                  child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    separatorBuilder: (context, index) => const SizedBox(width: 20),
+                                    itemCount: movieDetailController.tmdbMovieDetail.cast?.length ?? 0,
+                                    itemBuilder: (context, index) => Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(100),
+                                          child: CachedNetworkImage(
+                                            imageUrl: "https://image.tmdb.org/t/p/w276_and_h350_face/${movieDetailController.tmdbMovieDetail.cast?[index].profilePath}",
+                                            width: 80,
+                                            height: 80,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(movieDetailController.tmdbMovieDetail.cast?[index].character ?? '-'),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          movieDetailController.tmdbMovieDetail.cast?[index].originalName ?? '-',
+                                          style: smallText.copyWith(color: Colors.white.withOpacity(0.8)),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),

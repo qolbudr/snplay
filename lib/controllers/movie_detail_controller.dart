@@ -225,7 +225,7 @@ class MovieDetailController extends GetxController {
 
   Future<void> getTmdbMovieDetail() async {
     try {
-      Map<String, dynamic> response = await apiService.get('$tmdbBaseURL/movie/${arguments.tmdbId}?api_key=$tmdbApiKey');
+      Map<String, dynamic> response = await apiService.get('$tmdbBaseURL/movie/${arguments.tmdbId}?api_key=$tmdbApiKey&append_to_response=credits');
       TmdbMovieDetailResponseModel model = TmdbMovieDetailResponseModel.fromJson(response);
       TmdbMovieDetail data = model.toEntity();
       _tmdbMovieDetail.value = data;

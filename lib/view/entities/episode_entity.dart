@@ -11,6 +11,7 @@ class Episode {
   String? skipAvailable;
   String? introStart;
   String? introEnd;
+  String? status;
 
   Episode(
       {this.id,
@@ -24,5 +25,6 @@ class Episode {
       this.url,
       this.skipAvailable,
       this.introStart,
+      this.status,
       this.introEnd});
 }

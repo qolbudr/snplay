@@ -101,7 +101,7 @@ class SeriesDetailController extends GetxController {
     try {
       _episodeStatus.value = Status.loading;
       List<dynamic> response = await apiService.get('$baseURL/getEpisodes/$_selectedSeason');
-      List<Episode> data = response.map((e) => EpisodeResponseModel.fromJson(e).toEntity()).toList();
+      List<Episode> data = response.map((e) => EpisodeResponseModel.fromJson(e).toEntity()).where((element) => element.status == '1').toList();
       Future.wait(data.map((e) => getSubtitle(e.id)).toList()).then((value) {
         _episode.value = data;
         _episodeStatus.value = Status.success;
@@ -274,7 +274,7 @@ class SeriesDetailController extends GetxController {
 
   Future<void> getTmdbSeriesDetail() async {
     try {
-      Map<String, dynamic> response = await apiService.get('$tmdbBaseURL/tv/${arguments.tmdbId}?api_key=$tmdbApiKey');
+      Map<String, dynamic> response = await apiService.get('$tmdbBaseURL/tv/${arguments.tmdbId}?api_key=$tmdbApiKey&append_to_response=credits');
       TmdbSeriesDetailResponseModel model = TmdbSeriesDetailResponseModel.fromJson(response);
       TmdbSeriesDetail data = model.toEntity();
       _tmdbSeriesDetail.value = data;

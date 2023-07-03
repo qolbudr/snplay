@@ -81,17 +81,17 @@ class EpisodeResponseModel {
   }
 
   Episode toEntity() => Episode(
-        id: id,
-        episoadeName: episoadeName,
-        episoadeDescription: episoadeDescription,
-        episoadeImage: episoadeImage,
-        seasonId: seasonId,
-        downloadable: downloadable,
-        type: type,
-        source: source,
-        url: url,
-        skipAvailable: skipAvailable,
-        introStart: introStart,
-        introEnd: introEnd,
-      );
+      id: id,
+      episoadeName: episoadeName,
+      episoadeDescription: episoadeDescription,
+      episoadeImage: episoadeImage,
+      seasonId: seasonId,
+      downloadable: downloadable,
+      type: type,
+      source: source,
+      url: url,
+      skipAvailable: skipAvailable,
+      introStart: introStart,
+      introEnd: introEnd,
+      status: status);
 }

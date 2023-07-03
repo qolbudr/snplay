@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:snplay/constant.dart';
 import 'package:snplay/controllers/download_controller.dart';
 import 'package:snplay/controllers/login_controller.dart';
+import 'package:snplay/controllers/series_controller.dart';
 import 'package:snplay/controllers/series_detail_controller.dart';
 import 'package:snplay/view/entities/item_entity.dart';
 import 'package:snplay/view/widgets/item_card_widget.dart';
@@ -19,6 +20,7 @@ class SeriesDetailScreen extends StatefulWidget {
 class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
   final Item series = Get.arguments;
   final SeriesDetailController seriesDetailController = Get.put(SeriesDetailController());
+  final SeriesCotroller seriesController = Get.put(SeriesCotroller());
   final DownloadController downloadController = Get.put(DownloadController());
   final LoginController loginController = Get.put(LoginController());
 
@@ -307,83 +309,81 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
                                       child: Text("Episode", style: h4),
                                     ),
                                     const SizedBox(height: 15),
-                                    SizedBox(
-                                      width: Get.width,
-                                      height: 300,
-                                      child: ListView.separated(
-                                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                                        itemCount: seriesDetailController.episode.length,
-                                        separatorBuilder: (context, index) => const Divider(color: secondaryColor),
-                                        itemBuilder: (context, index) => GestureDetector(
-                                          onTap: () => seriesDetailController.getPlayerSource(index),
-                                          child: Row(
-                                            children: [
-                                              SizedBox(
-                                                width: 150,
-                                                child: AspectRatio(
-                                                  aspectRatio: 16 / 9,
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: seriesDetailController.episode[index].episoadeImage ?? '-',
-                                                    fit: BoxFit.cover,
+                                    ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                                      itemCount: seriesDetailController.episode.length,
+                                      separatorBuilder: (context, index) => const Divider(color: secondaryColor),
+                                      itemBuilder: (context, index) => GestureDetector(
+                                        onTap: () => seriesDetailController.getPlayerSource(index),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 150,
+                                              child: AspectRatio(
+                                                aspectRatio: 16 / 9,
+                                                child: CachedNetworkImage(
+                                                  imageUrl: seriesDetailController.episode[index].episoadeImage ?? '-',
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    seriesDetailController.episode[index].episoadeName ?? '-',
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: h4.copyWith(fontWeight: FontWeight.w600),
                                                   ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      seriesDetailController.episode[index].episoadeName ?? '-',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      style: h4.copyWith(fontWeight: FontWeight.w600),
+                                                  const SizedBox(height: 15),
+                                                  Text(
+                                                    seriesDetailController.episode[index].episoadeDescription ?? '-',
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    style: h5.copyWith(
+                                                      color: Colors.white.withOpacity(0.5),
+                                                      fontWeight: FontWeight.w400,
                                                     ),
-                                                    const SizedBox(height: 15),
-                                                    Text(
-                                                      seriesDetailController.episode[index].episoadeDescription ?? '-',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: 3,
-                                                      style: h5.copyWith(
-                                                        color: Colors.white.withOpacity(0.5),
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                              const SizedBox(width: 5),
-                                              if (series.type == '0' || loginController.user.subscriptionType!.contains('3'))
-                                                IconButton(
-                                                  onPressed: downloadController.task.indexWhere(
-                                                              (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}') ==
-                                                          -1
-                                                      ? () {
-                                                          Get.snackbar('Loading', 'Memuat informasi download');
-                                                          seriesDetailController.getEpisodeDownloadLink(seriesDetailController.episode[index].id!).then((value) {
-                                                            _showDownloadModal('/${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
-                                                          }).catchError((e) {
-                                                            Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi download');
-                                                          });
-                                                        }
-                                                      : null,
-                                                  icon: Builder(builder: (context) {
-                                                    int isDownload = downloadController.task.indexWhere(
-                                                        (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
-                                                    if (isDownload == -1) {
-                                                      return const Icon(
-                                                        Icons.download_outlined,
-                                                      );
-                                                    } else {
-                                                      return const Icon(
-                                                        Icons.check,
-                                                        color: primaryColor,
-                                                      );
-                                                    }
-                                                  }),
-                                                )
-                                            ],
-                                          ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            if (series.type == '0' || loginController.user.subscriptionType!.contains('3'))
+                                              IconButton(
+                                                onPressed: downloadController.task.indexWhere(
+                                                            (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}') ==
+                                                        -1
+                                                    ? () {
+                                                        Get.snackbar('Loading', 'Memuat informasi download');
+                                                        seriesDetailController.getEpisodeDownloadLink(seriesDetailController.episode[index].id!).then((value) {
+                                                          _showDownloadModal('/${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
+                                                        }).catchError((e) {
+                                                          Get.snackbar('Ada Kesalahan', 'Gagal mendapatkan informasi download');
+                                                        });
+                                                      }
+                                                    : null,
+                                                icon: Builder(builder: (context) {
+                                                  int isDownload = downloadController.task.indexWhere(
+                                                      (element) => element.taskId.split('/').last == '${seriesDetailController.selectedSeason}-${seriesDetailController.episode[index].id!}');
+                                                  if (isDownload == -1) {
+                                                    return const Icon(
+                                                      Icons.download_outlined,
+                                                    );
+                                                  } else {
+                                                    return const Icon(
+                                                      Icons.check,
+                                                      color: primaryColor,
+                                                    );
+                                                  }
+                                                }),
+                                              )
+                                          ],
                                         ),
                                       ),
                                     )
@@ -397,32 +397,90 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
                                     color: primaryColor,
                                   )),
                                 ),
-                          if (seriesDetailController.similarSeries.isNotEmpty)
-                            Column(
-                              children: [
-                                const SizedBox(height: 5),
-                                SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
-                                const SizedBox(height: 10),
-                                AspectRatio(
-                                  aspectRatio: Get.width / 150,
-                                  child: ListView.separated(
-                                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    separatorBuilder: (context, index) => const SizedBox(width: 10),
-                                    itemCount: seriesDetailController.similarSeries.length,
-                                    itemBuilder: (context, index) => ItemCard(
-                                      poster: seriesDetailController.similarSeries[index].poster ?? '-',
-                                      name: seriesDetailController.similarSeries[index].name ?? '-',
-                                      onTap: () {
-                                        Get.delete<SeriesDetailController>();
-                                        Get.toNamed('/series', arguments: seriesDetailController.similarSeries[index], preventDuplicates: false);
-                                      },
+                          const SizedBox(height: 20),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Text("Pemeran", style: h4),
+                          ),
+                          const SizedBox(height: 10),
+                          AspectRatio(
+                            aspectRatio: Get.width / 160,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (context, index) => const SizedBox(width: 20),
+                              itemCount: seriesDetailController.tmdbSeriesDetail.cast?.length ?? 0,
+                              itemBuilder: (context, index) => Column(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: CachedNetworkImage(
+                                      imageUrl: "https://image.tmdb.org/t/p/w276_and_h350_face/${seriesDetailController.tmdbSeriesDetail.cast?[index].profilePath}",
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 10),
+                                  Text(seriesDetailController.tmdbSeriesDetail.cast?[index].character ?? '-'),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    seriesDetailController.tmdbSeriesDetail.cast?[index].originalName ?? '-',
+                                    style: smallText.copyWith(color: Colors.white.withOpacity(0.8)),
+                                  )
+                                ],
+                              ),
                             ),
+                          ),
+                          (seriesDetailController.similarSeries.isNotEmpty)
+                              ? Column(
+                                  children: [
+                                    const SizedBox(height: 5),
+                                    SectionTitle(title: "Film Serupa", detail: "Film di SnPlay", onTap: () {}),
+                                    const SizedBox(height: 10),
+                                    AspectRatio(
+                                      aspectRatio: Get.width / 150,
+                                      child: ListView.separated(
+                                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        separatorBuilder: (context, index) => const SizedBox(width: 10),
+                                        itemCount: seriesDetailController.similarSeries.length,
+                                        itemBuilder: (context, index) => ItemCard(
+                                          poster: seriesDetailController.similarSeries[index].poster ?? '-',
+                                          name: seriesDetailController.similarSeries[index].name ?? '-',
+                                          onTap: () {
+                                            Get.delete<SeriesDetailController>();
+                                            Get.toNamed('/series', arguments: seriesDetailController.similarSeries[index], preventDuplicates: false);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                    SectionTitle(title: "Acak", detail: "Series di SnPlay", onTap: () {}),
+                                    const SizedBox(height: 10),
+                                    AspectRatio(
+                                      aspectRatio: Get.width / 150,
+                                      child: ListView.separated(
+                                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        separatorBuilder: (context, index) => const SizedBox(width: 10),
+                                        itemCount: seriesController.randomSeries.length,
+                                        itemBuilder: (context, index) => ItemCard(
+                                          poster: seriesController.randomSeries[index].poster ?? '-',
+                                          name: seriesController.randomSeries[index].name ?? '-',
+                                          onTap: () {
+                                            Get.toNamed('/movie', arguments: seriesController.randomSeries[index]);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                           const SizedBox(height: 50),
                         ],
                       )
